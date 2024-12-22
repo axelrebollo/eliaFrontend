@@ -1,5 +1,5 @@
 <template>
-  <h2>Hola soy el home</h2>
+  <h2>Soy la vista de notebook</h2>
 </template>
 
 <script setup></script>
