@@ -1,7 +1,11 @@
 <template>
-  <h2>Hola soy el home</h2>
+  <h2>Bienvenido a Èlia</h2>
 </template>
 
 <script setup></script>
 
-<style scoped></style>
+<style scoped>
+h2 {
+  text-align: center;
+}
+</style>
