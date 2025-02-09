@@ -1,5 +1,4 @@
 <template>
-  <h1>Soy App</h1>
   <MainNavbar />
   <RouterView />
 </template>
