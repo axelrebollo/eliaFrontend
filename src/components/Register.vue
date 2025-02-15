@@ -1,17 +1,36 @@
 <script setup>
 import { ref } from "vue";
+import { registerUser } from "@/services/authService.js";
 
-const username = ref("");
+const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
-const role = ref("Profesor");
+const role = ref("");
 
-const register = () => {
+const register = async () => {
   if (password.value !== confirmPassword.value) {
     alert("Las contraseñas no coinciden");
     return;
   }
-  console.log("Usuario:", username.value, "Rol:", role.value);
+
+  if (email.value == "" || password.value === "" || role.value === "") {
+    alert("Hay algún campo vacío");
+    return;
+  }
+
+  const userData = {
+    email: email.value,
+    password: password.value,
+    role: role.value,
+  };
+
+  try {
+    const response = await registerUser(userData);
+    alert("El registro se ha realizado con éxito");
+    console.log(response);
+  } catch {
+    alert("Se ha producido un error en el registro");
+  }
 };
 </script>
 
@@ -21,12 +40,12 @@ const register = () => {
       <h3 class="text-center mb-3">Registro de Usuario</h3>
       <form @submit.prevent="register">
         <div class="mb-3">
-          <label class="form-label">Nombre de Usuario</label>
+          <label class="form-label">Email</label>
           <input
-            v-model="username"
+            v-model="email"
             type="text"
             class="form-control"
-            placeholder="Ingrese su nombre de usuario"
+            placeholder="Ingrese su email"
           />
         </div>
         <div class="mb-3">
@@ -50,8 +69,8 @@ const register = () => {
         <div class="mb-3">
           <label class="form-label">Rol</label>
           <select v-model="role" class="form-select">
-            <option value="Profesor">Profesor</option>
-            <option value="Alumno">Alumno</option>
+            <option value="TEACHER">Profesor</option>
+            <option value="STUDENT">Alumno</option>
           </select>
         </div>
         <button type="submit" class="btn btn-primary w-100">Registrar</button>
