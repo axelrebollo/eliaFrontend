@@ -1,18 +1,20 @@
 <script setup>
 import { ref } from "vue";
 import { loginUser } from "@/services/authService.js";
+//import { useAuthStore } from "@/stores/authStore.js";
+import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
 const role = ref("");
+const router = useRouter();
+//const authStore = useAuthStore();
 
 const login = async () => {
-  if (email.value == "" || password.value === "") {
+  if (email.value === "" || password.value === "") {
     alert("Hay algún campo vacío");
     return;
   }
-
-  role.value = "";
 
   const userData = {
     email: email.value,
@@ -21,7 +23,10 @@ const login = async () => {
   };
 
   try {
+    role.value = "";
     const response = await loginUser(userData);
+    //authStore.setUserData(response);
+    router.push("/");
     alert("La autenticación de usuario es correcta");
     console.log(response);
   } catch {

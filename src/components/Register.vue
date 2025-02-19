@@ -1,13 +1,21 @@
 <script setup>
 import { ref } from "vue";
 import { registerUser } from "@/services/authService.js";
+import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const role = ref("");
+const router = useRouter();
 
 const register = async () => {
+  const userData = {
+    email: email.value,
+    password: password.value,
+    role: role.value,
+  };
+
   if (password.value !== confirmPassword.value) {
     alert("Las contraseñas no coinciden");
     return;
@@ -18,16 +26,11 @@ const register = async () => {
     return;
   }
 
-  const userData = {
-    email: email.value,
-    password: password.value,
-    role: role.value,
-  };
-
   try {
     const response = await registerUser(userData);
     alert("El registro se ha realizado con éxito");
     console.log(response);
+    router.push("login");
   } catch {
     alert("Se ha producido un error en el registro");
   }
