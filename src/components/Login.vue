@@ -1,4 +1,34 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import { loginUser } from "@/services/authService.js";
+
+const email = ref("");
+const password = ref("");
+const role = ref("");
+
+const login = async () => {
+  if (email.value == "" || password.value === "") {
+    alert("Hay algún campo vacío");
+    return;
+  }
+
+  role.value = "";
+
+  const userData = {
+    email: email.value,
+    password: password.value,
+    role: role.value,
+  };
+
+  try {
+    const response = await loginUser(userData);
+    alert("La autenticación de usuario es correcta");
+    console.log(response);
+  } catch {
+    alert("Se ha producido un error en la autenticación");
+  }
+};
+</script>
 
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -6,12 +36,12 @@
       <h3 class="text-center mb-3">Iniciar Sesión</h3>
       <form @submit.prevent="login">
         <div class="mb-3">
-          <label class="form-label">Usuario</label>
+          <label class="form-label">Email</label>
           <input
-            v-model="username"
+            v-model="email"
             type="text"
             class="form-control"
-            placeholder="Ingrese su usuario"
+            placeholder="Ingrese su email"
           />
         </div>
         <div class="mb-3">
