@@ -44,30 +44,15 @@ const register = async () => {
       <form @submit.prevent="register">
         <div class="mb-3">
           <label class="form-label">Email</label>
-          <input
-            v-model="email"
-            type="text"
-            class="form-control"
-            placeholder="Ingrese su email"
-          />
+          <input v-model="email" type="text" class="form-control" placeholder="Ingrese su email"/>
         </div>
         <div class="mb-3">
           <label class="form-label">Contraseña</label>
-          <input
-            v-model="password"
-            type="password"
-            class="form-control"
-            placeholder="Ingrese su contraseña"
-          />
+          <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña"/>
         </div>
         <div class="mb-3">
           <label class="form-label">Vuelva a escribir la contraseña</label>
-          <input
-            v-model="confirmPassword"
-            type="password"
-            class="form-control"
-            placeholder="Repita su contraseña"
-          />
+          <input v-model="confirmPassword" type="password" class="form-control" placeholder="Repita su contraseña"/>
         </div>
         <div class="mb-3">
           <label class="form-label">Rol</label>

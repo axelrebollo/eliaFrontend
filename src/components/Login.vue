@@ -54,22 +54,11 @@ const login = async () => {
       <form @submit.prevent="login">
         <div class="mb-3">
           <label class="form-label">Email</label>
-          <input
-            v-model="email"
-            type="email"
-            class="form-control"
-            placeholder="Ingrese su email"
-          />
+          <input v-model="email" type="email" class="form-control" placeholder="Ingrese su email"/>
         </div>
         <div class="mb-3">
           <label class="form-label">Contraseña</label>
-          <input
-            v-model="password"
-            type="password"
-            class="form-control"
-            placeholder="Ingrese su contraseña"
-            required
-          />
+          <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña" required/>
         </div>
         <button type="submit" class="btn btn-primary w-100" :disabled="loading">
           {{ loading ? "ingresando..." : "Ingresar" }}
@@ -80,8 +69,8 @@ const login = async () => {
 </template>
 
 <style scoped>
-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
+  button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 </style>

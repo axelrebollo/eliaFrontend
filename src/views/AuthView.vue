@@ -6,7 +6,7 @@
 <script setup></script>
 
 <style scoped>
-h2 {
-  text-align: center;
-}
+  h2 {
+    text-align: center;
+  }
 </style>
