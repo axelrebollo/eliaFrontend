@@ -1,14 +1,15 @@
 <script setup>
 import { ref } from "vue";
 import { loginUser } from "@/services/authService.js";
-//import { useAuthStore } from "@/stores/authStore.js";
+import { useAuthStore } from "@/stores/authStore.js";
 import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
+const loading = ref(false);
 const role = ref("");
 const router = useRouter();
-//const authStore = useAuthStore();
+const authStore = useAuthStore();
 
 const login = async () => {
   if (email.value === "" || password.value === "") {
@@ -24,13 +25,24 @@ const login = async () => {
 
   try {
     role.value = "";
+    loading.value = true;
     const response = await loginUser(userData);
-    //authStore.setUserData(response);
+
+    //deserialize token and save data
+    if (!response && !response.token) {
+      alert("Error en la autenticación.");
+      console.log("Token no recibido");
+      return;
+    }
+
+    authStore.setUserData(response.token);
     router.push("/");
     alert("La autenticación de usuario es correcta");
-    console.log(response);
-  } catch {
-    alert("Se ha producido un error en la autenticación");
+  } catch (error) {
+    alert("Se ha producido un error en la autenticación: ");
+    console.error("Error en login:", error);
+  } finally {
+    loading.value = false;
   }
 };
 </script>
@@ -44,7 +56,7 @@ const login = async () => {
           <label class="form-label">Email</label>
           <input
             v-model="email"
-            type="text"
+            type="email"
             class="form-control"
             placeholder="Ingrese su email"
           />
@@ -56,12 +68,20 @@ const login = async () => {
             type="password"
             class="form-control"
             placeholder="Ingrese su contraseña"
+            required
           />
         </div>
-        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        <button type="submit" class="btn btn-primary w-100" :disabled="loading">
+          {{ loading ? "ingresando..." : "Ingresar" }}
+        </button>
       </form>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+</style>

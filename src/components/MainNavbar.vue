@@ -6,7 +6,7 @@
           <a>Principal</a>
         </button>
       </li>
-      <li>
+      <li v-if="isAutenticated">
         <button
           type="button"
           class="btn btn-outline-custom"
@@ -15,7 +15,7 @@
           Perfil de usuario
         </button>
       </li>
-      <li>
+      <li v-if="isAutenticated && userRole === 'TEACHER'">
         <button
           type="button"
           class="btn btn-outline-custom"
@@ -26,32 +26,52 @@
       </li>
     </ul>
     <ul class="menu_right">
-      <li>
-        <button type="button" class="btn btn-outline-custom" @click="goToLogin">
-          Inicio de sesión
-        </button>
-      </li>
-      <li>
-        <button
-          type="button"
-          class="btn btn-outline-custom"
-          @click="goToRegister"
-        >
-          Registrate
-        </button>
-      </li>
-      <li>
-        <button type="button" class="btn btn-outline-custom" @click="goTohome">
-          Cerrar sesión
-        </button>
-      </li>
+      <template v-if="!isAutenticated">
+        <li>
+          <button
+            type="button"
+            class="btn btn-outline-custom"
+            @click="goToLogin"
+          >
+            Inicio de sesión
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            class="btn btn-outline-custom"
+            @click="goToRegister"
+          >
+            Registrate
+          </button>
+        </li>
+      </template>
+      <template v-else>
+        <li>
+          <span class="text-light">{{ userEmail }}</span>
+        </li>
+        <li>
+          <button type="button" class="btn btn-outline-custom" @click="logout">
+            Cerrar sesión
+          </button>
+        </li>
+      </template>
     </ul>
   </nav>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/authStore.js";
+import { computed } from "vue";
 const router = useRouter();
+const authStore = useAuthStore();
+
+//check is autenticated
+const isAutenticated = computed(() => authStore.isAuthenticated);
+
+const userEmail = computed(() => authStore.userEmail);
+const userRole = computed(() => authStore.userRole);
 
 const goTohome = () => {
   router.push("/");
@@ -71,6 +91,11 @@ const goToProfile = () => {
 
 const goToNotebook = () => {
   router.push("/notebook");
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push("/");
 };
 </script>
 

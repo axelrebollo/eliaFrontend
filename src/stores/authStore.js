@@ -1,20 +1,23 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", () => {
-  const token = ref(null);
+  const token = ref(localStorage.getItem("token") || null);
   const role = ref(null);
   const email = ref(null);
 
   function setUserData(userToken) {
     token.value = userToken;
+    localStorage.setItem("token", userToken);
 
     try {
-      const decoded = JSON.parse(atob(userToken.split(".")[1]));
-      role.value = decoded.role;
-      email.value = decoded.email;
+      const decoded = jwtDecode(userToken);
+      role.value = decoded.role || null;
+      email.value = decoded.email || null;
     } catch (error) {
       console.error("Error decodificando el token:", error);
+      logout();
     }
   }
 
@@ -22,9 +25,20 @@ export const useAuthStore = defineStore("auth", () => {
     token.value = null;
     role.value = null;
     email.value = null;
+    localStorage.removeItem("token");
   }
 
-  const isAuthenticated = computed(() => !!token.value);
+  const isAuthenticated = computed(() => {
+    if (!token.value) return false;
+    try {
+      const { exp } = jwtDecode(token.value);
+      return Date.now() < exp * 1000;
+    } catch {
+      logout();
+      return false;
+    }
+  });
+
   const userRole = computed(() => role.value);
   const userEmail = computed(() => email.value);
 
