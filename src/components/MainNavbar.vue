@@ -8,40 +8,25 @@
       </li>
       <li v-if="isAutenticated">
         <button
-          type="button"
-          class="btn btn-outline-custom"
-          @click="goToProfile"
-        >
-          Perfil de usuario
+          type="button" class="btn btn-outline-custom" @click="goToProfile">
+          <a>Perfil de usuario</a>
         </button>
       </li>
       <li v-if="isAutenticated && userRole === 'TEACHER'">
-        <button
-          type="button"
-          class="btn btn-outline-custom"
-          @click="goToNotebook"
-        >
-          Libro de notas
+        <button type="button" class="btn btn-outline-custom" @click="goToNotebook">
+          <a>Libro de notas</a>
         </button>
       </li>
     </ul>
     <ul class="menu_right">
       <template v-if="!isAutenticated">
         <li>
-          <button
-            type="button"
-            class="btn btn-outline-custom"
-            @click="goToLogin"
-          >
+          <button type="button" class="btn btn-outline-custom" @click="goToLogin">
             Inicio de sesión
           </button>
         </li>
         <li>
-          <button
-            type="button"
-            class="btn btn-outline-custom"
-            @click="goToRegister"
-          >
+          <button type="button" class="btn btn-outline-custom" @click="goToRegister">
             Registrate
           </button>
         </li>
