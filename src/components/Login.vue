@@ -48,19 +48,19 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card p-4 shadow" style="width: 350px">
-      <h3 class="text-center mb-3">Iniciar Sesión</h3>
+  <div class="d-flex justify-content-center align-items-center vh-100 custom-bg">
+    <div class="card p-4 shadow" style="width: 350px; background-color: #343a40;">
+      <h3 class="text-center mb-3 text-white">Iniciar Sesión</h3>
       <form @submit.prevent="login">
         <div class="mb-3">
-          <label class="form-label">Email</label>
+          <label class="form-label text-white">Email</label>
           <input v-model="email" type="email" class="form-control" placeholder="Ingrese su email"/>
         </div>
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
+          <label class="form-label text-white">Contraseña</label>
           <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña" required/>
         </div>
-        <button type="submit" class="btn btn-primary w-100" :disabled="loading">
+        <button type="submit" class="btn btn-secondary w-100" :disabled="loading">
           {{ loading ? "ingresando..." : "Ingresar" }}
         </button>
       </form>
@@ -72,5 +72,9 @@ const login = async () => {
   button[disabled] {
     cursor: not-allowed;
     opacity: 0.7;
+  }
+
+  .custom-bg {
+    background-color: rgb(122, 122, 122);
   }
 </style>

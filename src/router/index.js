@@ -5,6 +5,8 @@ import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import NotebookView from "@/views/NotebookView.vue";
+import ProfileStudent from "@/components/ProfileStudent.vue";
+import ProfileTeacher from "@/components/ProfileTeacher.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,7 +37,19 @@ const router = createRouter({
       path: "/profile",
       name: "profile",
       component: ProfileView,
-    },
+      children: [
+        {
+          path: "profileStudent",
+          name: "profileStudent",
+          component: ProfileStudent,
+        },
+        {
+          path: "profileTeacher",
+          name: "profileTeacher",
+          component: ProfileTeacher,
+        },
+      ],
+    },    
     {
       path: "/notebook",
       name: "notebook",

@@ -71,7 +71,12 @@ const goToLogin = () => {
 };
 
 const goToProfile = () => {
-  router.push("/profile");
+  if(authStore.userRole === "TEACHER"){ //POR ARREGLAR
+    router.push("/profile/profileTeacher"); //dependiendo del role
+  }
+  else{
+    router.push("/profile/profileStudent"); //dependiendo del role
+  }
 };
 
 const goToNotebook = () => {

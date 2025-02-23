@@ -38,33 +38,37 @@ const register = async () => {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
-    <div class="card p-4 shadow" style="width: 350px">
-      <h3 class="text-center mb-3">Registro de Usuario</h3>
+  <div class="d-flex justify-content-center align-items-center vh-100 custom-bg">
+    <div class="card p-4 shadow" style="width: 350px; background-color: #343a40;">
+      <h3 class="text-center mb-3 text-white">Registro de Usuario</h3>
       <form @submit.prevent="register">
         <div class="mb-3">
-          <label class="form-label">Email</label>
+          <label class="form-label text-white">Email</label>
           <input v-model="email" type="text" class="form-control" placeholder="Ingrese su email"/>
         </div>
         <div class="mb-3">
-          <label class="form-label">Contraseña</label>
+          <label class="form-label text-white">Contraseña</label>
           <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña"/>
         </div>
         <div class="mb-3">
-          <label class="form-label">Vuelva a escribir la contraseña</label>
+          <label class="form-label text-white">Vuelva a escribir la contraseña</label>
           <input v-model="confirmPassword" type="password" class="form-control" placeholder="Repita su contraseña"/>
         </div>
         <div class="mb-3">
-          <label class="form-label">Rol</label>
+          <label class="form-label text-white">Rol</label>
           <select v-model="role" class="form-select">
             <option value="TEACHER">Profesor</option>
             <option value="STUDENT">Alumno</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-primary w-100">Registrar</button>
+        <button type="submit" class="btn btn-secondary w-100">Registrar</button>
       </form>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .custom-bg {
+    background-color: rgb(122, 122, 122);
+  }
+</style>

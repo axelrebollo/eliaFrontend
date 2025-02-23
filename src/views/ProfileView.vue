@@ -1,11 +1,13 @@
-<template>
-  <h2>Soy la vista de perfil, para estar aquí necesitas estar registrado</h2>
-</template>
-
 <script setup></script>
 
+<template>
+  <div class="d-flex justify-content-center vh-100 custom-bg">
+    <router-view></router-view>
+  </div>
+</template>
+
 <style scoped>
-  h2 {
-    text-align: center;
+  .custom-bg {
+    background-color: rgb(122, 122, 122);
   }
 </style>
