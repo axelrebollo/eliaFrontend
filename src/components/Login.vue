@@ -1,50 +1,51 @@
 <script setup>
-import { ref } from "vue";
-import { loginUser } from "@/services/authService.js";
-import { useAuthStore } from "@/stores/authStore.js";
-import { useRouter } from "vue-router";
+  import { ref } from "vue";
+  import { loginUser } from "@/services/authService.js";
+  import { useAuthStore } from "@/stores/authStore.js";
+  import { useRouter } from "vue-router";
 
-const email = ref("");
-const password = ref("");
-const loading = ref(false);
-const role = ref("");
-const router = useRouter();
-const authStore = useAuthStore();
+  const email = ref("");
+  const password = ref("");
+  const loading = ref(false);
+  const role = ref("");
+  const router = useRouter();
+  const authStore = useAuthStore();
 
-const login = async () => {
-  if (email.value === "" || password.value === "") {
-    alert("Hay algún campo vacío");
-    return;
-  }
-
-  const userData = {
-    email: email.value,
-    password: password.value,
-    role: role.value,
-  };
-
-  try {
-    role.value = "";
-    loading.value = true;
-    const response = await loginUser(userData);
-
-    //deserialize token and save data
-    if (!response && !response.token) {
-      alert("Error en la autenticación.");
-      console.log("Token no recibido");
+  const login = async () => {
+    if(email.value === "" || password.value === ""){
+      alert("Hay algún campo vacío");
       return;
     }
 
-    authStore.setUserData(response.token);
-    router.push("/");
-    alert("La autenticación de usuario es correcta");
-  } catch (error) {
-    alert("Se ha producido un error en la autenticación: ");
-    console.error("Error en login:", error);
-  } finally {
-    loading.value = false;
-  }
-};
+    const userData = {
+      email: email.value,
+      password: password.value,
+      role: role.value,
+    };
+
+    try{
+      role.value = "";
+      loading.value = true;
+      const response = await loginUser(userData);
+
+      //deserialize token and save data
+      if(!response && !response.token){
+        alert("Error en la autenticación.");
+        console.log("Token no recibido");
+        return;
+      }
+
+      authStore.setUserData(response.token);
+      router.push("/");
+    } 
+    catch (error){
+      alert("Se ha producido un error en la autenticación: ");
+      console.error("Error en login:", error);
+    } 
+    finally{
+      loading.value = false;
+    }
+  };
 </script>
 
 <template>

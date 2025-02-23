@@ -42,7 +42,6 @@
 
 <template>
   <div class="navbar-container">
-    <!-- Dropdowns y botón en disposición vertical -->
     <div class="dropdowns-container">
       <div class="dropdown">
         <label for="dropdownYear" class="text-white">Año</label>
@@ -110,7 +109,6 @@
           </button>
         </div>
       </div>
-      <!--Establecer visualizaciones dependiendo si hay cambios insertados manualmente-->
       <button class="btn btn-secondary w-100 mt-3" @Click="loadTable">
         <i class="bi bi-cloud-upload">&nbsp</i>Cargar materia
       </button>
@@ -122,17 +120,9 @@
 </template>
 
 <style scoped>
+  
   .navbar-container {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 20px;
-  }
-
-  .navbar-title {
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
   }
 
   .dropdowns-container {

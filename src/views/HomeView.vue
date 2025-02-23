@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center vh-100 custom-bg">
+  <div>
     <h2>Bienvenido a Èlia</h2>
   </div>
 </template>
@@ -14,6 +14,13 @@
   }
 
   .custom-bg {
+    background-color: rgb(122, 122, 122);
+  }
+
+  div {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
     background-color: rgb(122, 122, 122);
   }
 </style>

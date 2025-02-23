@@ -1,12 +1,12 @@
 <script setup>
-import MainNavBarNotebook from "@/components/MainNavBarNotebook.vue";
-import Notebook from "@/components/Notebook.vue";
+  import MainNavBarNotebook from "@/components/MainNavBarNotebook.vue";
+  import Notebook from "@/components/Notebook.vue";
 </script>
 
 <template>
-  <div class="d-flex flex-column align-items-center vh-100 custom-bg">
+  <div>
     <h2>Libro de notas de: Èlia Serrán Villar</h2>
-    <div class="containerNotebook d-flex flex-row gap-3">
+    <div class="containerNotebook">
       <MainNavBarNotebook/>
       <Notebook/>
     </div>
@@ -14,13 +14,23 @@ import Notebook from "@/components/Notebook.vue";
 </template>
 
 <style scoped>
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(122, 122, 122);
+  }
+
   h2 {
     text-align: center;
     color: white;
     padding-top: 50px;
   }
 
-  .custom-bg {
-    background-color: rgb(122, 122, 122);
+  .containerNotebook {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
   }
 </style>

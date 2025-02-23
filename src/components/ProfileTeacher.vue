@@ -72,10 +72,6 @@
     opacity: 0.7;
   }
 
-  .custom-bg {
-    background-color: rgb(122, 122, 122);
-  }
-
   .form-control {
     background-color: #495057;
     color: white;
@@ -101,6 +97,7 @@
   .card {
     background-color: #343a40; 
     color: white; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   }
 
   .table {
@@ -124,9 +121,5 @@
   .table th, .table td {
     border-color: #6c757d;
     text-align: center;
-  }
-
-  .card {
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   }
 </style>

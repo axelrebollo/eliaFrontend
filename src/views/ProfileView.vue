@@ -1,13 +1,16 @@
 <script setup></script>
 
 <template>
-  <div class="d-flex justify-content-center vh-100 custom-bg">
+  <div>
     <router-view></router-view>
   </div>
 </template>
 
 <style scoped>
-  .custom-bg {
+  div{
+    display: flex;
+    justify-content: center;
+    height: 100vh;
     background-color: rgb(122, 122, 122);
   }
 </style>

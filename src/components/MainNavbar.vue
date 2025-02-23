@@ -1,3 +1,44 @@
+<script setup>
+  import { useRouter } from "vue-router";
+  import { useAuthStore } from "@/stores/authStore.js";
+  import { computed } from "vue";
+  const router = useRouter();
+  const authStore = useAuthStore();
+  const isAutenticated = computed(() => authStore.isAuthenticated);
+  const userEmail = computed(() => authStore.userEmail);
+  const userRole = computed(() => authStore.userRole);
+
+  const goTohome = () => {
+    router.push("/");
+  };
+
+  const goToRegister = () => {
+    router.push("/auth/register");
+  };
+
+  const goToLogin = () => {
+    router.push("/auth/login");
+  };
+
+  const goToProfile = () => {
+    if(authStore.userRole === "TEACHER"){ //POR ARREGLAR
+      router.push("/profile/profileTeacher"); //dependiendo del role
+    }
+    else{
+      router.push("/profile/profileStudent"); //dependiendo del role
+    }
+  };
+
+  const goToNotebook = () => {
+    router.push("/notebook");
+  };
+
+  const logout = () => {
+    authStore.logout();
+    router.push("/");
+  };
+</script>
+
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <ul class="menu_left">
@@ -7,8 +48,7 @@
         </button>
       </li>
       <li v-if="isAutenticated">
-        <button
-          type="button" class="btn btn-outline-custom" @click="goToProfile">
+        <button type="button" class="btn btn-outline-custom" @click="goToProfile">
           <a>Perfil de usuario</a>
         </button>
       </li>
@@ -45,69 +85,27 @@
   </nav>
 </template>
 
-<script setup>
-import { useRouter } from "vue-router";
-import { useAuthStore } from "@/stores/authStore.js";
-import { computed } from "vue";
-const router = useRouter();
-const authStore = useAuthStore();
-
-//check is autenticated
-const isAutenticated = computed(() => authStore.isAuthenticated);
-
-const userEmail = computed(() => authStore.userEmail);
-const userRole = computed(() => authStore.userRole);
-
-const goTohome = () => {
-  router.push("/");
-};
-
-const goToRegister = () => {
-  router.push("/auth/register");
-};
-
-const goToLogin = () => {
-  router.push("/auth/login");
-};
-
-const goToProfile = () => {
-  if(authStore.userRole === "TEACHER"){ //POR ARREGLAR
-    router.push("/profile/profileTeacher"); //dependiendo del role
-  }
-  else{
-    router.push("/profile/profileStudent"); //dependiendo del role
-  }
-};
-
-const goToNotebook = () => {
-  router.push("/notebook");
-};
-
-const logout = () => {
-  authStore.logout();
-  router.push("/");
-};
-</script>
-
 <style scoped>
-.btn-outline-custom {
-  color: #ffcc00;
-  border-color: #ffcc00;
-}
+  .btn-outline-custom{
+    color: #ffcc00;
+    border-color: #ffcc00;
+  }
 
-.btn-outline-custom:hover {
-  background-color: #ffcc00;
-  color: black;
-}
-.menu_right,
-.menu_left {
-  display: flex;
-  gap: 20px;
-}
-ul {
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-}
+  .btn-outline-custom:hover{
+    background-color: #ffcc00;
+    color: black;
+  }
+
+  .menu_right,
+  .menu_left{
+    display: flex;
+    gap: 20px;
+  }
+
+  ul{
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
 </style>

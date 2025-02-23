@@ -4,8 +4,4 @@
 
 <script setup></script>
 
-<style scoped>
-  h2 {
-    text-align: center;
-  }
-</style>
+<style scoped></style>
