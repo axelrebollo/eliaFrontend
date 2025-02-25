@@ -1,14 +1,45 @@
 <script setup>
-  const getData = () => {
+  import { onMounted, ref, watch } from "vue";
+  import { useProfileStore } from "@/stores/profileStore";
+  import { useAuthStore } from "@/stores/authStore";
 
-  };
+  const profileStore = useProfileStore();
+  const authStore = useAuthStore();
+
+  const name = ref("");
+  const surname1 = ref("");
+  const surname2 = ref("");
+  const email = ref(authStore.email);
+  const role = ref("");
+  const classCode = ref("");
+
+  onMounted(async ()=>{
+    await profileStore.fetchProfile();
+
+    name.value = profileStore.profile.name;
+    surname1.value = profileStore.profile.surname1;
+    surname2.value = profileStore.profile.surname2;
+
+    if(authStore.role === "TEACHER"){
+      role.value = "Profesor";
+    }
+    else if(authStore.role === "STUDENT"){
+      role.value = "Estudiante";
+    }
+    else{
+      role.value = "";
+    }
+  });
+
+  watch([name, surname1, surname2], ([newName, newSurname1, newSurname2]) => {
+    profileStore.profile.name = newName;
+    profileStore.profile.surname1 = newSurname1;
+    profileStore.profile.surname2 = newSurname2;
+  });
 
   const addClass = () => {
-
-  };
-
-  const saveData = () => {
-
+    console.log(classCode.value);
+    //POR CREAR FUNCIONALIDAD
   };
 </script>
 
@@ -20,25 +51,29 @@
           <h3 class="text-center mb-3 text-white">Perfil del estudiante</h3>
           <form @submit.prevent="guardarDatos">
             <div class="mb-3">
-              <label for="nombre" class="form-label text-white">Nombre</label>
-              <input v-model="nombre" type="text" class="form-control" id="nombre" placeholder="Juan" />
+              <label for="name" class="form-label text-white">Nombre</label>
+              <input v-model="name" type="text" class="form-control" id="name" placeholder="Nombre" />
             </div>
             <div class="mb-3">
-              <label for="apellidos" class="form-label text-white">Apellidos</label>
-              <input v-model="apellidos" type="text" class="form-control" id="apellidos" placeholder="Pérez" />
+              <label for="surname1" class="form-label text-white">Apellido 1</label>
+              <input v-model="surname1" type="text" class="form-control" id="surname1" placeholder="Apellido 1" />
+            </div>
+            <div class="mb-3">
+              <label for="surname2" class="form-label text-white">Apellido 2</label>
+              <input v-model="surname2" type="text" class="form-control" id="surname2" placeholder="Apellido 2" />
             </div>
             <div class="mb-3">
               <label for="email" class="form-label text-white">Email</label>
-              <input v-model="email" type="email" class="form-control" id="email" placeholder="juanperez@email.com" disabled />
+              <input v-model="email" type="email" class="form-control" id="email" placeholder="email" disabled />
             </div>
             <div class="mb-3">
               <label for="role" class="form-label text-white">Rol</label>
-              <input v-model="role" type="text" class="form-control" id="role" placeholder="Profesor" disabled />
+              <input v-model="role" type="text" class="form-control" id="role" placeholder="Rol del usuario" disabled />
             </div>
             <div class="mb-3">
               <label for="classCode" class="form-label text-white">Añadir código clase</label>
               <div class="addClass">
-                <input v-model="classCode" type="text" class="form-control" id="classCode" placeholder="abcd1234" />
+                <input v-model="classCode" type="text" class="form-control" id="classCode" placeholder="Código clase" />
                 <button type="button" class="btn btn-secondary" @click="addClass">
                   Añadir clase
                 </button>
@@ -66,11 +101,11 @@
             </thead>
             <tbody>
               <tr v-for="clase in clases" :key="clase.codigo">
-                <td>{{ clase.codigo }}</td>
-                <td>{{ clase.anio }}</td>
-                <td>{{ clase.curso }}</td>
-                <td>{{ clase.grupo }}</td>
-                <td>{{ clase.asignatura }}</td>
+                <td>{{ clase.code }}</td>
+                <td>{{ clase.year }}</td>
+                <td>{{ clase.course }}</td>
+                <td>{{ clase.group }}</td>
+                <td>{{ clase.subject }}</td>
               </tr>
             </tbody>
           </table>

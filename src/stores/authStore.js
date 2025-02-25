@@ -4,8 +4,8 @@ import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref(localStorage.getItem("token") || null);
-  const role = ref(null);
-  const email = ref(null);
+  const role = ref(localStorage.getItem("role")|| null);
+  const email = ref(localStorage.getItem("email")|| null);
 
   function setUserData(userToken) {
     token.value = userToken;
@@ -15,6 +15,9 @@ export const useAuthStore = defineStore("auth", () => {
       const decoded = jwtDecode(userToken);
       role.value = decoded.role || null;
       email.value = decoded.email || null;
+
+      localStorage.setItem("role",role.value);
+      localStorage.setItem("email",email.value);
     } catch (error) {
       console.error("Error decodificando el token:", error);
       logout();
@@ -26,6 +29,8 @@ export const useAuthStore = defineStore("auth", () => {
     role.value = null;
     email.value = null;
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("email");
   }
 
   const isAuthenticated = computed(() => {

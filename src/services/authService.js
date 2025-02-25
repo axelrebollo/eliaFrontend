@@ -1,8 +1,8 @@
-import apiClient from "./api.js";
+import api from "./api.js";
 
 const registerUser = async (userData) => {
   try {
-    const response = await apiClient.post("/register", userData);
+    const response = await api.apiClient.post("/register", userData);
     return response.data;
   } catch (error) {
     console.error(
@@ -17,7 +17,7 @@ export { registerUser };
 
 const loginUser = async (userData) => {
   try {
-    const response = await apiClient.post("/login", userData);
+    const response = await api.apiClient.post("/login", userData);
     return response.data;
   } catch (error) {
     console.error(
