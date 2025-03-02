@@ -10,6 +10,7 @@
   const role = ref("");
   const router = useRouter();
   const authStore = useAuthStore();
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const login = async () => {
     if(email.value === "" || password.value === ""){
@@ -22,6 +23,16 @@
       password: password.value,
       role: role.value,
     };
+
+    if(email.value == "" || password.value === ""){
+      alert("Hay algún campo vacío");
+      return;
+    }
+
+    if(!regex.test(email.value)){
+      alert("El email no tiene un formato correcto");
+      return;
+    }
 
     try{
       role.value = "";

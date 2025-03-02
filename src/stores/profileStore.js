@@ -16,16 +16,47 @@ export const useProfileStore = defineStore("profile", () => {
 
     try {
       const response = await api.apiProfile.get(`/getProfile`, 
-        { params: { token: authStore.token }, });
+        { params: { token: authStore.token }, 
+      });
+
       profile.value = {
         name: response.data.name || "",
         surname1: response.data.surname1 || "",
         surname2: response.data.surname2 || "",
       };
-    } catch (error) {
+
+      localStorage.setItem("name", profile.value.name);
+      localStorage.setItem("surname1", profile.value.surname1);
+      localStorage.setItem("surname2", profile.value.surname2);
+    } 
+    catch (error) {
       console.error("Error al recuperar el perfil:", error.response?.data || error.message);
     }
   }
 
-  return { profile, fetchProfile };
+  async function updateProfile(updatedData) {
+    const authStore = useAuthStore();
+    if (!authStore.token) {
+      console.error("No hay token de autenticación.");
+      return;
+    }
+
+    try {
+      await api.apiProfile.put(`/updateProfile`, updatedData, {
+        params: { token: authStore.token },
+      });
+
+      localStorage.setItem("name", profile.value.name);
+      localStorage.setItem("surname1", profile.value.surname1);
+      localStorage.setItem("surname2", profile.value.surname2);
+      
+      return true;
+    } 
+    catch (error) {
+      console.error("Error al actualizar el perfil:", error.response?.data || error.message);
+      return false;
+    }
+  }
+
+  return { profile, fetchProfile, updateProfile };
 });

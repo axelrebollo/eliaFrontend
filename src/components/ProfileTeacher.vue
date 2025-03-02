@@ -5,7 +5,6 @@
 
   const profileStore = useProfileStore();
   const authStore = useAuthStore();
-
   const name = ref("");
   const surname1 = ref("");
   const surname2 = ref("");
@@ -35,6 +34,27 @@
     profileStore.profile.surname1 = newSurname1;
     profileStore.profile.surname2 = newSurname2;
   });
+
+  const updateProfile = async () => {
+    if(name.value === "" || name.value === null || 
+        surname1.value === "" || surname1.value === null ||
+        surname2.value === "" || surname2.value === null){
+      alert("Existe algún campo vacío.");
+    }
+    
+    try {
+      await profileStore.updateProfile({
+        name: name.value,
+        surname1: surname1.value,
+        surname2: surname2.value
+      });
+
+      alert("Perfil actualizado con éxito");
+    } catch (error) {
+      alert("Hubo un error al actualizar el perfil: "+error.response.data.Error);
+      console.error("Error al actualizar el perfil:", error.response.data.Error);
+    }
+  };
 </script>
 
 <template>
@@ -43,7 +63,7 @@
       <div class="col-md-5">
         <div class="card p-4 shadow" style="background-color: #343a40;">
           <h3 class="text-center mb-3 text-white">Perfil del profesor</h3>
-          <form @submit.prevent="guardarDatos">
+          <form @submit.prevent="updateProfile">
             <div class="mb-3">
               <label for="name" class="form-label text-white">Nombre</label>
               <input v-model="name" type="text" class="form-control" id="name" placeholder="Nombre" />

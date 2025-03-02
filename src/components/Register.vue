@@ -8,6 +8,7 @@
   const confirmPassword = ref("");
   const role = ref("");
   const router = useRouter();
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const register = async () => {
     const userData = {
@@ -16,13 +17,18 @@
       role: role.value,
     };
 
-    if(password.value !== confirmPassword.value){
-      alert("Las contraseñas no coinciden");
+    if(email.value == "" || password.value === "" || role.value === ""){
+      alert("Hay algún campo vacío");
       return;
     }
 
-    if(email.value == "" || password.value === "" || role.value === ""){
-      alert("Hay algún campo vacío");
+    if(!regex.test(email.value)){
+      alert("El email no tiene un formato correcto");
+      return;
+    }
+
+    if(password.value !== confirmPassword.value){
+      alert("Las contraseñas no coinciden");
       return;
     }
 
