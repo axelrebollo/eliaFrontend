@@ -39,7 +39,7 @@
       router.push("/");
     } 
     catch (error){
-      alert("Se ha producido un error en la autenticación: ");
+      alert("Se ha producido un error en la autenticación: "+ error.response.data.Error);
       console.error("Error en login:", error);
     } 
     finally{

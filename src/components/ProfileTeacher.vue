@@ -11,7 +11,6 @@
   const surname2 = ref("");
   const email = ref(authStore.email);
   const role = ref("");
-  const classCode = ref("");
 
   onMounted(async ()=>{
     await profileStore.fetchProfile();

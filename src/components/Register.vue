@@ -32,8 +32,8 @@
       console.log(response);
       router.push("login");
     } 
-    catch{
-      alert("Se ha producido un error en el registro");
+    catch(error){
+      alert("Se ha producido un error en el registro: "+error.response.data.Error);
     }
   };
 </script>

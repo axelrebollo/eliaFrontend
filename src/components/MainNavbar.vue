@@ -20,12 +20,15 @@
     router.push("/auth/login");
   };
 
+  const isLoginPage = computed(() => router.currentRoute.value.path === "/auth/login");
+  const isRegisterPage = computed(() => router.currentRoute.value.path === "/auth/register");
+
   const goToProfile = () => {
-    if(authStore.userRole === "TEACHER"){ //POR ARREGLAR
-      router.push("/profile/profileTeacher"); //dependiendo del role
+    if(authStore.userRole === "TEACHER"){
+      router.push("/profile/profileTeacher");
     }
     else{
-      router.push("/profile/profileStudent"); //dependiendo del role
+      router.push("/profile/profileStudent");
     }
   };
 
@@ -60,12 +63,12 @@
     </ul>
     <ul class="menu_right">
       <template v-if="!isAutenticated">
-        <li>
+        <li v-if="!isLoginPage">
           <button type="button" class="btn btn-outline-custom" @click="goToLogin">
             Inicio de sesión
           </button>
         </li>
-        <li>
+        <li v-if="!isRegisterPage">
           <button type="button" class="btn btn-outline-custom" @click="goToRegister">
             Registrate
           </button>
