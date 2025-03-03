@@ -38,12 +38,17 @@ export const useProfileStore = defineStore("profile", () => {
     const authStore = useAuthStore();
     if (!authStore.token) {
       console.error("No hay token de autenticación.");
-      return;
+      return false;
     }
 
     try {
-      await api.apiProfile.put(`/updateProfile`, updatedData, {
-        params: { token: authStore.token },
+      const response = await api.apiProfile.post(`/updateProfile`, null, {
+        params: { 
+          token: authStore.token, 
+          name: updatedData.name,
+          surname1: updatedData.surname1,
+          surname2: updatedData.surname2,
+        },
       });
 
       localStorage.setItem("name", profile.value.name);

@@ -43,13 +43,15 @@
     }
     
     try {
-      await profileStore.updateProfile({
+      const success = await profileStore.updateProfile({
         name: name.value,
         surname1: surname1.value,
         surname2: surname2.value
       });
 
-      alert("Perfil actualizado con éxito");
+      if(success){
+        alert("Perfil actualizado con éxito");
+      }
     } catch (error) {
       alert("Hubo un error al actualizar el perfil: "+error.response.data.Error);
       console.error("Error al actualizar el perfil:", error.response.data.Error);
