@@ -1,5 +1,6 @@
 import api from "./api.js";
 
+//Get user profile (API interaction)
 const getProfile = async () => {
   try {
     const response = await api.apiProfile.get("/getProfile");
@@ -14,6 +15,7 @@ const getProfile = async () => {
   }
 };
 
+//update user profile (API interaction)
 const updateProfile = async (updatedData) => {
   const authStore = useAuthStore();
   if (!authStore.token) {

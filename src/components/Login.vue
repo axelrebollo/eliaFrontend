@@ -12,6 +12,7 @@
   const authStore = useAuthStore();
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  //request async for not block the UI
   const login = async () => {
     if(email.value === "" || password.value === ""){
       alert("Hay algún campo vacío");

@@ -4,12 +4,14 @@ import { useAuthStore } from "./authStore";
 import api from "@/services/api.js";
 
 export const useProfileStore = defineStore("profile", () => {
+  //Save user data profile
   const profile = ref({
     name: "",
     surname1: "",
     surname2: "",
   });
 
+  //get profile and update localStorage
   async function fetchProfile() {
     const authStore = useAuthStore();
     if (!authStore.token) return;
@@ -25,6 +27,7 @@ export const useProfileStore = defineStore("profile", () => {
         surname2: response.data.surname2 || "",
       };
 
+      //update localStorage
       localStorage.setItem("name", profile.value.name);
       localStorage.setItem("surname1", profile.value.surname1);
       localStorage.setItem("surname2", profile.value.surname2);
@@ -34,6 +37,7 @@ export const useProfileStore = defineStore("profile", () => {
     }
   }
 
+  //update profile and update localStorage
   async function updateProfile(updatedData) {
     const authStore = useAuthStore();
     if (!authStore.token) {
@@ -51,6 +55,7 @@ export const useProfileStore = defineStore("profile", () => {
         },
       });
 
+      //update localStorage
       localStorage.setItem("name", profile.value.name);
       localStorage.setItem("surname1", profile.value.surname1);
       localStorage.setItem("surname2", profile.value.surname2);
@@ -63,5 +68,9 @@ export const useProfileStore = defineStore("profile", () => {
     }
   }
 
-  return { profile, fetchProfile, updateProfile };
+  return { 
+    profile, 
+    fetchProfile, 
+    updateProfile 
+  };
 });

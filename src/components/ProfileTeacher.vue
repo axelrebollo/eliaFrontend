@@ -11,6 +11,7 @@
   const email = ref(authStore.email);
   const role = ref("");
 
+  //inicializes when opening the profile 
   onMounted(async ()=>{
     await profileStore.fetchProfile();
 
@@ -29,12 +30,14 @@
     }
   });
 
+  //observe and update variables
   watch([name, surname1, surname2], ([newName, newSurname1, newSurname2]) => {
     profileStore.profile.name = newName;
     profileStore.profile.surname1 = newSurname1;
     profileStore.profile.surname2 = newSurname2;
   });
 
+  //update profile with a async function to not block UI
   const updateProfile = async () => {
     if(name.value === "" || name.value === null || 
         surname1.value === "" || surname1.value === null ||

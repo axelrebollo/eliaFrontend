@@ -20,8 +20,12 @@
     router.push("/auth/login");
   };
 
+  //reactive variables
   const isLoginPage = computed(() => router.currentRoute.value.path === "/auth/login");
   const isRegisterPage = computed(() => router.currentRoute.value.path === "/auth/register");
+  const isProfileStudentPage = computed(() => router.currentRoute.value.path === "/profile/profileStudent");
+  const isProfileTeacherPage = computed(() => router.currentRoute.value.path === "/profile/profileTeacher");
+  const isNotebookPage = computed(() => router.currentRoute.value.path === "/notebook");
 
   const goToProfile = () => {
     if(authStore.userRole === "TEACHER"){
@@ -50,12 +54,13 @@
           <a>Principal</a>
         </button>
       </li>
-      <li v-if="isAutenticated">
+      <li v-if="(isAutenticated && !isProfileStudentPage && userRole === 'STUDENT') ||
+                (isAutenticated && !isProfileTeacherPage && userRole === 'TEACHER')">
         <button type="button" class="btn btn-outline-custom" @click="goToProfile">
           <a>Perfil de usuario</a>
         </button>
       </li>
-      <li v-if="isAutenticated && userRole === 'TEACHER'">
+      <li v-if="isAutenticated && userRole === 'TEACHER' && !isNotebookPage">
         <button type="button" class="btn btn-outline-custom" @click="goToNotebook">
           <a>Libro de notas</a>
         </button>

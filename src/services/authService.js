@@ -1,5 +1,6 @@
 import api from "./api.js";
 
+//register user (API interaction)
 const registerUser = async (userData) => {
   try {
     const response = await api.apiClient.post("/register", userData);
@@ -13,6 +14,7 @@ const registerUser = async (userData) => {
   }
 };
 
+//login user (API interaction)
 export { registerUser };
 
 const loginUser = async (userData) => {

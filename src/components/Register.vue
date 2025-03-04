@@ -10,6 +10,7 @@
   const router = useRouter();
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  //request async for not block the UI
   const register = async () => {
     const userData = {
       email: email.value,

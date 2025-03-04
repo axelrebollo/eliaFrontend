@@ -3,27 +3,31 @@ import { ref, computed } from "vue";
 import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", () => {
+  //load data into localStorage
   const token = ref(localStorage.getItem("token") || null);
   const role = ref(localStorage.getItem("role")|| null);
   const email = ref(localStorage.getItem("email")|| null);
 
+  //update localStorage with data
   function setUserData(userToken) {
     token.value = userToken;
     localStorage.setItem("token", userToken);
 
-    try {
+    try{
       const decoded = jwtDecode(userToken);
       role.value = decoded.role || null;
       email.value = decoded.email || null;
 
       localStorage.setItem("role",role.value);
       localStorage.setItem("email",email.value);
-    } catch (error) {
+    } 
+    catch(error){
       console.error("Error decodificando el token:", error);
       logout();
     }
   }
 
+  //close session 
   function logout() {
     token.value = null;
     role.value = null;
@@ -33,6 +37,7 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("email");
   }
 
+  //check if user is autenticated
   const isAuthenticated = computed(() => {
     if (!token.value) return false;
     try {
@@ -44,6 +49,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
   });
 
+  //reactive variables
   const userRole = computed(() => role.value);
   const userEmail = computed(() => email.value);
 

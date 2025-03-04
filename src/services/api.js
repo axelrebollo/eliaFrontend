@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//Axios requests users
 const apiClient = axios.create({
   baseURL: "http://localhost:18090/users",
   headers: {
@@ -7,6 +8,7 @@ const apiClient = axios.create({
   },
 });
 
+//Axios request profiles
 const apiProfile = axios.create({
   baseURL: "http://localhost:18090/profiles",
   headers: {
