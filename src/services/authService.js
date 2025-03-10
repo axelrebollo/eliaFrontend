@@ -1,4 +1,4 @@
-import api from "./api.js";
+import api from "./userApi.js";
 
 //register user (API interaction)
 const registerUser = async (userData) => {

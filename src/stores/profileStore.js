@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAuthStore } from "./authStore";
-import api from "@/services/api.js";
+import api from "@/services/userApi.js";
 
 export const useProfileStore = defineStore("profile", () => {
   //Save user data profile

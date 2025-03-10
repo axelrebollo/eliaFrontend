@@ -1,4 +1,10 @@
 <script setup>
+  import { ref, onMounted } from "vue";
+  import { getYears } from "@/services/yearService.js";
+
+  const years = ref([]);
+  const newYear = ref("");
+  
   const loadTable = () => {
 
   }
@@ -7,8 +13,22 @@
     
   }
 
-  const addYear = () => {
+  const getYearsForDropdown = async () => {
+    years.value = await getYears();
+  }
 
+  onMounted(getYearsForDropdown);
+
+  const addNewYear = async () => {
+    if (newYear.value.trim() !== "") {
+      const response = await addYear(newYear.value);
+      if (response) {
+        years.value.push(response.nameYear);
+        newYear.value = "";
+      }
+    } else {
+      console.error("El nombre del año no puede estar vacío");
+    }
   }
 
   const deleteYear = () => {
@@ -47,14 +67,12 @@
         <label for="dropdownYear" class="text-white">Año</label>
         <div class="dropdownRow">
           <select id="dropdownYear" class="form-control">
-            <option>2025</option>
-            <option>2024</option>
-            <option>2023</option>
+            <option v-for="year in years" :key="year">{{ year }}</option>
           </select>
-          <button class="btn btn-success" @Click="addYear">
+          <button class="btn btn-success" @click="addNewYear">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @Click="deleteYear">
+          <button class="btn btn-danger" @click="deleteYear">
             <i class="bi bi-trash"></i>
           </button>
         </div>

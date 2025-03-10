@@ -1,4 +1,4 @@
-import api from "./api.js";
+import api from "./userApi.js";
 
 //Get user profile (API interaction)
 const getProfile = async () => {
