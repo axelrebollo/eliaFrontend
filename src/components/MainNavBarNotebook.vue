@@ -3,7 +3,6 @@
   import { getYears } from "@/services/yearService.js";
   import { addYear } from "@/services/yearService.js";
   import Modal from "@/components/ModalName.vue";
-  import { nextTick } from "vue";
 
   const years = ref([]);
   const modalRef = ref(null);
@@ -31,9 +30,6 @@
       const response = await addYear(yearName);
       if (response) {
         years.value.push(response.nameYear);
-        nextTick(() => {
-                console.log('Dropdown actualizado');
-            });
       }
     }
   }
@@ -145,8 +141,7 @@
   </div>
 </template>
 
-<style scoped>
-  
+<style scoped> 
   .navbar-container {
     align-items: center;
   }
