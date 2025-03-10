@@ -1,9 +1,12 @@
 <script setup>
   import { ref, onMounted } from "vue";
   import { getYears } from "@/services/yearService.js";
+  import { addYear } from "@/services/yearService.js";
+  import Modal from "@/components/ModalName.vue";
+  import { nextTick } from "vue";
 
   const years = ref([]);
-  const newYear = ref("");
+  const modalRef = ref(null);
   
   const loadTable = () => {
 
@@ -19,15 +22,19 @@
 
   onMounted(getYearsForDropdown);
 
-  const addNewYear = async () => {
-    if (newYear.value.trim() !== "") {
-      const response = await addYear(newYear.value);
+  const addNewYear = () => {
+    modalRef.value.openModal();
+  }
+
+  const handleAddYear = async (yearName) => {
+    if (yearName.trim() !== "") {
+      const response = await addYear(yearName);
       if (response) {
         years.value.push(response.nameYear);
-        newYear.value = "";
+        nextTick(() => {
+                console.log('Dropdown actualizado');
+            });
       }
-    } else {
-      console.error("El nombre del año no puede estar vacío");
     }
   }
 
@@ -87,10 +94,10 @@
             <option>4ro</option>
             <option>Bachillerato</option>
           </select>
-          <button class="btn btn-success" @Click="addCourse">
+          <button class="btn btn-success" @click="addCourse">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @Click="deleteCourse">
+          <button class="btn btn-danger" @click="deleteCourse">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -103,10 +110,10 @@
             <option>B</option>
             <option>-</option>
           </select>
-          <button class="btn btn-success" @Click="addGroup">
+          <button class="btn btn-success" @click="addGroup">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @Click="deleteGroup">
+          <button class="btn btn-danger" @click="deleteGroup">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -119,21 +126,22 @@
             <option>Optativa: Gusto por la lectura</option>
             <option>Matemáticas</option>
           </select>
-          <button class="btn btn-success" @Click="addSubject">
+          <button class="btn btn-success" @click="addSubject">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @Click="deleteSubject">
+          <button class="btn btn-danger" @click="deleteSubject">
             <i class="bi bi-trash"></i>
           </button>
         </div>
       </div>
-      <button class="btn btn-secondary w-100 mt-3" @Click="loadTable">
+      <button class="btn btn-secondary w-100 mt-3" @click="loadTable">
         <i class="bi bi-cloud-upload">&nbsp</i>Cargar materia
       </button>
-      <button class="btn btn-success w-100 mt-3" @Click="createTable">
+      <button class="btn btn-success w-100 mt-3" @click="createTable">
         <i class="bi bi-plus">&nbsp</i>Crear matéria
       </button> 
     </div>
+    <Modal ref="modalRef" @submit="handleAddYear" @close="handleCloseModal" />
   </div>
 </template>
 
