@@ -4,6 +4,7 @@
   import { useAuthStore } from "@/stores/authStore.js";
   import { useRouter } from "vue-router";
 
+  //variables
   const email = ref("");
   const password = ref("");
   const loading = ref(false);
@@ -14,18 +15,14 @@
 
   //request async for not block the UI
   const login = async () => {
-    if(email.value === "" || password.value === ""){
-      alert("Hay algún campo vacío");
-      return;
-    }
-
+    //data
     const userData = {
       email: email.value,
       password: password.value,
       role: role.value,
     };
 
-    if(email.value == "" || password.value === ""){
+    if(email.value === "" || password.value === ""){
       alert("Hay algún campo vacío");
       return;
     }
@@ -36,8 +33,8 @@
     }
 
     try{
-      role.value = "";
-      loading.value = true;
+      role.value = "";  //the role is needed "" to backend
+      loading.value = true; //shows loading in the button
       const response = await loginUser(userData);
 
       //deserialize token and save data
@@ -47,7 +44,9 @@
         return;
       }
 
+      //update store
       authStore.setUserData(response.token);
+      //redirect to home
       router.push("/");
     } 
     catch (error){
@@ -55,7 +54,7 @@
       console.error("Error en login:", error);
     } 
     finally{
-      loading.value = false;
+      loading.value = false;  //finish, not show loading into button
     }
   };
 </script>
@@ -71,9 +70,11 @@
         </div>
         <div class="mb-3">
           <label class="form-label text-white">Contraseña</label>
+          <!--reactive variable with v-model-->
           <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña" required/>
         </div>
         <button type="submit" class="btn btn-secondary w-100" :disabled="loading">
+          <!--loading-->
           {{ loading ? "ingresando..." : "Ingresar" }}
         </button>
       </form>

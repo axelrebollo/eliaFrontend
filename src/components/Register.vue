@@ -3,6 +3,7 @@
   import { registerUser } from "@/services/authService.js";
   import { useRouter } from "vue-router";
 
+  //variables
   const email = ref("");
   const password = ref("");
   const confirmPassword = ref("");
@@ -12,6 +13,7 @@
 
   //request async for not block the UI
   const register = async () => {
+    //data
     const userData = {
       email: email.value,
       password: password.value,
@@ -37,6 +39,7 @@
       const response = await registerUser(userData);
       alert("El registro se ha realizado con éxito");
       console.log(response);
+      //load component login
       router.push("login");
     } 
     catch(error){
@@ -52,18 +55,22 @@
       <form @submit.prevent="register">
         <div class="mb-3">
           <label class="form-label text-white">Email</label>
+          <!--reactive variable with v-model-->
           <input v-model="email" type="text" class="form-control" placeholder="Ingrese su email"/>
         </div>
         <div class="mb-3">
           <label class="form-label text-white">Contraseña</label>
+          <!--reactive variable with v-model-->
           <input v-model="password" type="password" class="form-control" placeholder="Ingrese su contraseña"/>
         </div>
         <div class="mb-3">
           <label class="form-label text-white">Vuelva a escribir la contraseña</label>
+          <!--reactive variable with v-model-->
           <input v-model="confirmPassword" type="password" class="form-control" placeholder="Repita su contraseña"/>
         </div>
         <div class="mb-3">
           <label class="form-label text-white">Rol</label>
+          <!--reactive variable with v-model-->
           <select v-model="role" class="form-select">
             <option value="TEACHER">Profesor</option>
             <option value="STUDENT">Alumno</option>

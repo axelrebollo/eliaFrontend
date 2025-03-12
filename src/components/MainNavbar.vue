@@ -2,6 +2,7 @@
   import { useRouter } from "vue-router";
   import { useAuthStore } from "@/stores/authStore.js";
   import { computed } from "vue";
+  
   const router = useRouter();
   const authStore = useAuthStore();
   const isAutenticated = computed(() => authStore.isAuthenticated);
@@ -20,7 +21,7 @@
     router.push("/auth/login");
   };
 
-  //reactive variables
+  //reactive variables to check components
   const isLoginPage = computed(() => router.currentRoute.value.path === "/auth/login");
   const isRegisterPage = computed(() => router.currentRoute.value.path === "/auth/register");
   const isProfileStudentPage = computed(() => router.currentRoute.value.path === "/profile/profileStudent");
@@ -49,17 +50,20 @@
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <ul class="menu_left">
+      <!--home-->
       <li>
         <button type="button" class="btn btn-outline-custom" @click="goTohome">
           <a>Principal</a>
         </button>
       </li>
+      <!--profile-->
       <li v-if="(isAutenticated && !isProfileStudentPage && userRole === 'STUDENT') ||
                 (isAutenticated && !isProfileTeacherPage && userRole === 'TEACHER')">
         <button type="button" class="btn btn-outline-custom" @click="goToProfile">
           <a>Perfil de usuario</a>
         </button>
       </li>
+      <!--notebook-->
       <li v-if="isAutenticated && userRole === 'TEACHER' && !isNotebookPage">
         <button type="button" class="btn btn-outline-custom" @click="goToNotebook">
           <a>Libro de notas</a>
@@ -68,11 +72,13 @@
     </ul>
     <ul class="menu_right">
       <template v-if="!isAutenticated">
+        <!--login-->
         <li v-if="!isLoginPage">
           <button type="button" class="btn btn-outline-custom" @click="goToLogin">
             Inicio de sesión
           </button>
         </li>
+        <!--register-->
         <li v-if="!isRegisterPage">
           <button type="button" class="btn btn-outline-custom" @click="goToRegister">
             Registrate
@@ -80,9 +86,11 @@
         </li>
       </template>
       <template v-else>
+        <!--email user-->
         <li>
           <span class="text-light">{{ userEmail }}</span>
         </li>
+        <!--close session-->
         <li>
           <button type="button" class="btn btn-outline-custom" @click="logout">
             Cerrar sesión

@@ -4,6 +4,7 @@
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import Modal from "@/components/ModalName.vue";
 
+  //variables (reactive)
   const years = ref([]);
   const subjects = ref([]);
   const modalRef = ref(null);
@@ -17,10 +18,13 @@
     subjects.value = await getSubjects();
   }
 
+  //load dropdowns when open component
   onMounted(getYearsForDropdown);
   onMounted(getSubjectsForDropdown);
 
+  //open dynamic modal
   const openModal = (type) => {
+    //type add year
     if (type === "year") {
       modalConfig.value = {
         title: "Ingresar Nombre del Año",
@@ -28,6 +32,7 @@
         buttonText: "Agregar Año",
         submitHandler: handleAddYear
       };
+    //type add subject
     } else if (type === "subject") {
       modalConfig.value = {
         title: "Ingresar Nombre de la Asignatura",
@@ -39,20 +44,26 @@
     modalRef.value.openModal();
   };
   
+  //add year
   const handleAddYear = async (yearName) => {
     if (yearName.trim() !== "") {
+      //add year
       const response = await addYear(yearName);
       if (response) {
-        years.value.push(response.nameYear);
+        //reload dropdown
+        await getYearsForDropdown();
       }
     }
   }
   
+  //add subject
   const handleAddSubject = async (subjectName) => {
     if (subjectName.trim() !== "") {
+      //add year
       const response = await addSubject(subjectName);
       if (response) {
-        years.value.push(response.nameSubject);
+        //reload dropdown
+        await getSubjectsForDropdown();
       }
     }
   }
@@ -61,6 +72,7 @@
 <template>
   <div class="navbar-container">
     <div class="dropdowns-container">
+      <!--dorpdown year-->
       <div class="dropdown">
         <label for="dropdownYear" class="text-white">Año</label>
         <div class="dropdownRow">
@@ -75,6 +87,7 @@
           </button>
         </div>
       </div>
+      <!--dorpdown course-->
       <div class="dropdown">
         <label for="dropdownCourse" class="text-white">Curso</label>
         <div class="dropdownRow">
@@ -93,6 +106,7 @@
           </button>
         </div>
       </div>
+      <!--dorpdown group-->
       <div class="dropdown">
         <label for="dropdownGroup" class="text-white">Grupo</label>
         <div class="dropdownRow">
@@ -109,6 +123,7 @@
           </button>
         </div>
       </div>
+      <!--dorpdown subject-->
       <div class="dropdown">
         <label for="dropdown4" class="text-white">Asignatura</label>
         <div class="dropdownRow">
@@ -123,9 +138,11 @@
           </button>
         </div>
       </div>
+      <!--load table-->
       <button class="btn btn-secondary w-100 mt-3" @click="loadTable">
         <i class="bi bi-cloud-upload">&nbsp</i>Cargar tabla
       </button>
+      <!--create table-->
       <button class="btn btn-success w-100 mt-3" @click="createTable">
         <i class="bi bi-plus">&nbsp</i>Crear tabla
       </button> 

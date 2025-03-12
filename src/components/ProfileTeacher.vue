@@ -3,6 +3,7 @@
   import { useProfileStore } from "@/stores/profileStore";
   import { useAuthStore } from "@/stores/authStore";
 
+  //variables
   const profileStore = useProfileStore();
   const authStore = useAuthStore();
   const name = ref("");
@@ -13,12 +14,15 @@
 
   //inicializes when opening the profile 
   onMounted(async ()=>{
+    //get profile
     await profileStore.fetchProfile();
 
+    //load variables to view
     name.value = profileStore.profile.name;
     surname1.value = profileStore.profile.surname1;
     surname2.value = profileStore.profile.surname2;
 
+    //parse role
     if(authStore.role === "TEACHER"){
       role.value = "Profesor";
     }
@@ -46,6 +50,7 @@
     }
     
     try {
+      //update profile call
       const success = await profileStore.updateProfile({
         name: name.value,
         surname1: surname1.value,

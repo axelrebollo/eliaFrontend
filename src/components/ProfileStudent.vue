@@ -6,6 +6,7 @@
   const profileStore = useProfileStore();
   const authStore = useAuthStore();
 
+  //variables
   const name = ref("");
   const surname1 = ref("");
   const surname2 = ref("");
@@ -21,6 +22,7 @@
     surname1.value = profileStore.profile.surname1;
     surname2.value = profileStore.profile.surname2;
 
+    //parse role
     if(authStore.role === "TEACHER"){
       role.value = "Profesor";
     }
@@ -48,6 +50,7 @@
     }
     
     try {
+      //update profile
       const success = await profileStore.updateProfile({
         name: name.value,
         surname1: surname1.value,

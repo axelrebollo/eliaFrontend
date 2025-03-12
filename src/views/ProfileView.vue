@@ -10,7 +10,7 @@
   div{
     display: flex;
     justify-content: center;
-    height: 100vh;
+    height: 100vh;  /*height all screen into explorer*/
     background-color: rgb(122, 122, 122);
   }
 </style>

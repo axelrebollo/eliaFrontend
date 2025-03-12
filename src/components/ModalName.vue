@@ -2,14 +2,17 @@
     import { ref } from "vue";
 
     const props = defineProps({
+    //text 
     title: {
         type: String,
         required: true
     },
+    //input
     placeholder: {
         type: String,
         required: true
     },
+    //text button
     buttonText: {
         type: String,
         required: true
@@ -20,16 +23,19 @@
     const inputValue = ref("");
     const isVisible = ref(false);
 
+    //open modal
     const openModal = () => {
-    isVisible.value = true;
+      isVisible.value = true;
     };
 
+    //close modal
     const closeModal = () => {
-    isVisible.value = false;
-    inputValue.value = "";
-    emit("close");
+      isVisible.value = false;
+      inputValue.value = "";
+      emit("close");
     };
 
+    //set name
     const submit = () => {
     if (inputValue.value.trim() !== "") {
         emit("submit", inputValue.value);
@@ -39,7 +45,6 @@
     }
     };
 
-    // Exponer métodos
     defineExpose({
     openModal,
     closeModal
@@ -49,10 +54,14 @@
 <template>
   <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
     <div class="modal-content">
+      <!--text dynamic-->
       <h3>{{ title }}</h3>
+      <!--input dynamic-->
       <input v-model="inputValue" type="text" :placeholder="placeholder" />
       <div class="modal-buttons">
+        <!--button add name dynamic-->
         <button @click="submit">{{ buttonText }}</button>
+        <!--button cancel-->
         <button @click="closeModal">Cancelar</button>
       </div>
     </div>
@@ -60,7 +69,6 @@
 </template>
 
 <style scoped>
-    /* Estilos existentes */
     .modal-overlay {
     position: fixed;
     top: 0;
