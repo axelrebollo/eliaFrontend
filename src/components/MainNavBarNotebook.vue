@@ -1,30 +1,44 @@
 <script setup>
   import { ref, onMounted } from "vue";
-  import { getYears } from "@/services/yearService.js";
-  import { addYear } from "@/services/yearService.js";
+  import { getYears, addYear } from "@/services/yearService.js";
+  import { getSubjects, addSubject } from "@/services/subjectService.js";
   import Modal from "@/components/ModalName.vue";
 
   const years = ref([]);
+  const subjects = ref([]);
   const modalRef = ref(null);
+  const modalConfig = ref({});
   
-  const loadTable = () => {
-
-  }
-
-  const createTable = () => {
-    
-  }
-
   const getYearsForDropdown = async () => {
     years.value = await getYears();
   }
 
-  onMounted(getYearsForDropdown);
-
-  const addNewYear = () => {
-    modalRef.value.openModal();
+  const getSubjectsForDropdown = async () => {
+    subjects.value = await getSubjects();
   }
 
+  onMounted(getYearsForDropdown);
+  onMounted(getSubjectsForDropdown);
+
+  const openModal = (type) => {
+    if (type === "year") {
+      modalConfig.value = {
+        title: "Ingresar Nombre del Año",
+        placeholder: "Nombre del Año",
+        buttonText: "Agregar Año",
+        submitHandler: handleAddYear
+      };
+    } else if (type === "subject") {
+      modalConfig.value = {
+        title: "Ingresar Nombre de la Asignatura",
+        placeholder: "Nombre de la Asignatura",
+        buttonText: "Agregar Asignatura",
+        submitHandler: handleAddSubject
+      };
+    }
+    modalRef.value.openModal();
+  };
+  
   const handleAddYear = async (yearName) => {
     if (yearName.trim() !== "") {
       const response = await addYear(yearName);
@@ -33,33 +47,14 @@
       }
     }
   }
-
-  const deleteYear = () => {
-
-  }
-
-  const addCourse = () => {
-
-  }
-
-  const deleteCourse = () => {
-
-  }
   
-  const addGroup = () => {
-
-  }
-
-  const deleteGroup = () => {
-
-  }
-
-  const addSubject = () => {
-
-  }
-
-  const deleteSubject = () => {
-
+  const handleAddSubject = async (subjectName) => {
+    if (subjectName.trim() !== "") {
+      const response = await addSubject(subjectName);
+      if (response) {
+        years.value.push(response.nameSubject);
+      }
+    }
   }
 </script>
 
@@ -72,7 +67,7 @@
           <select id="dropdownYear" class="form-control">
             <option v-for="year in years" :key="year">{{ year }}</option>
           </select>
-          <button class="btn btn-success" @click="addNewYear">
+          <button class="btn btn-success" @click="openModal('year')">
             <i class="bi bi-plus"></i>
           </button>
           <button class="btn btn-danger" @click="deleteYear">
@@ -118,11 +113,9 @@
         <label for="dropdown4" class="text-white">Asignatura</label>
         <div class="dropdownRow">
           <select id="dropdown4" class="form-control">
-            <option>Música</option>
-            <option>Optativa: Gusto por la lectura</option>
-            <option>Matemáticas</option>
+            <option v-for="subject in subjects" :key="subject">{{ subject }}</option>
           </select>
-          <button class="btn btn-success" @click="addSubject">
+          <button class="btn btn-success" @click="openModal('subject')">
             <i class="bi bi-plus"></i>
           </button>
           <button class="btn btn-danger" @click="deleteSubject">
@@ -131,13 +124,21 @@
         </div>
       </div>
       <button class="btn btn-secondary w-100 mt-3" @click="loadTable">
-        <i class="bi bi-cloud-upload">&nbsp</i>Cargar materia
+        <i class="bi bi-cloud-upload">&nbsp</i>Cargar tabla
       </button>
       <button class="btn btn-success w-100 mt-3" @click="createTable">
-        <i class="bi bi-plus">&nbsp</i>Crear matéria
+        <i class="bi bi-plus">&nbsp</i>Crear tabla
       </button> 
     </div>
-    <Modal ref="modalRef" @submit="handleAddYear" @close="handleCloseModal" />
+    <!--Dynamic modal to add something name-->
+    <Modal
+      ref="modalRef"
+      :title="modalConfig.title"
+      :placeholder="modalConfig.placeholder"
+      :buttonText="modalConfig.buttonText"
+      @submit="modalConfig.submitHandler"
+      @close="() => {}"
+    />
   </div>
 </template>
 
