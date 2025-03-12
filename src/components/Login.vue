@@ -50,7 +50,8 @@
       router.push("/");
     } 
     catch (error){
-      alert("Se ha producido un error en la autenticación: "+ error.response.data.Error);
+      const mensajeError = error.response.data?.mensaje || "Error desconocido";
+      alert("Se ha producido un error en la autenticación: "+ mensajeError);
       console.error("Error en login:", error);
     } 
     finally{
