@@ -89,6 +89,7 @@
       <div class="dropdown">
         <label for="dropdownYear" class="text-white">Año</label>
         <div class="dropdownRow">
+          <!--if year selected then load courses-->
           <select id="dropdownYear" class="form-control" v-model="selectedYear" @change="getCoursesForDropdown">
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
           </select>
