@@ -14,7 +14,8 @@ const getYears = async () => {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     return response.data.years;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("Error obteniendo los años:", error.response?.data || error.message);
     return [];
   }

@@ -2,11 +2,14 @@
   import { ref, onMounted } from "vue";
   import { getYears, addYear } from "@/services/yearService.js";
   import { getSubjects, addSubject } from "@/services/subjectService.js";
+  import { getCourses } from "@/services/courseService.js";
   import Modal from "@/components/ModalName.vue";
 
   //variables (reactive)
   const years = ref([]);
   const subjects = ref([]);
+  const courses = ref([]);
+  const selectedYear = ref(null);
   const modalRef = ref(null);
   const modalConfig = ref({});
   
@@ -18,9 +21,19 @@
     subjects.value = await getSubjects();
   }
 
+  //dropdown loaded when select year
+  const getCoursesForDropdown = async () => {
+    if(!selectedYear.value){
+      return;
+    }
+    courses.value = await getCourses(selectedYear.value);
+  }
+
   //load dropdowns when open component
-  onMounted(getYearsForDropdown);
-  onMounted(getSubjectsForDropdown);
+  onMounted(async () => {
+    await getYearsForDropdown();
+    await getSubjectsForDropdown();
+  });
 
   //open dynamic modal
   const openModal = (type) => {
@@ -76,8 +89,8 @@
       <div class="dropdown">
         <label for="dropdownYear" class="text-white">Año</label>
         <div class="dropdownRow">
-          <select id="dropdownYear" class="form-control">
-            <option v-for="year in years" :key="year">{{ year }}</option>
+          <select id="dropdownYear" class="form-control" v-model="selectedYear" @change="getCoursesForDropdown">
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
           </select>
           <button class="btn btn-success" @click="openModal('year')">
             <i class="bi bi-plus"></i>
@@ -92,11 +105,7 @@
         <label for="dropdownCourse" class="text-white">Curso</label>
         <div class="dropdownRow">
           <select id="dropdownCourse" class="form-control">
-            <option>1ro</option>
-            <option>2o</option>
-            <option>3ro</option>
-            <option>4ro</option>
-            <option>Bachillerato</option>
+            <option v-for="course in courses" :key="course">{{ course }}</option>
           </select>
           <button class="btn btn-success" @click="addCourse">
             <i class="bi bi-plus"></i>

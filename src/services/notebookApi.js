@@ -16,7 +16,16 @@ const apiSubjects = axios.create({
   },
 });
 
+//Axios requests courses
+const apiCourses = axios.create({
+  baseURL: "http://localhost:18091/courses",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export default {
   apiYears,
   apiSubjects,
+  apiCourses,
 };
