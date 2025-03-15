@@ -21,6 +21,30 @@ const getCourses = async (nameYear) => {
     }
 };
 
+//addCourse
+const addCourse = async (nameCourse, nameYear) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return;
+  }
+
+  try {
+    const response = await api.apiCourses.post(
+      `/addCourse?token=${authStore.token}&nameCourse=${nameCourse}&nameYear=${nameYear}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error agregando el curso:", error.response?.data || error.message);
+    return null;
+  }
+};
+
 export{
     getCourses,
+    addCourse
 }

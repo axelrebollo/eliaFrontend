@@ -24,8 +24,17 @@ const apiCourses = axios.create({
   },
 });
 
+//Axios requests groups
+const apiGroups = axios.create({
+  baseURL: "http://localhost:18091/groups",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export default {
   apiYears,
   apiSubjects,
   apiCourses,
+  apiGroups,
 };

@@ -2,14 +2,18 @@
   import { ref, onMounted } from "vue";
   import { getYears, addYear } from "@/services/yearService.js";
   import { getSubjects, addSubject } from "@/services/subjectService.js";
-  import { getCourses } from "@/services/courseService.js";
+  import { getCourses, addCourse } from "@/services/courseService.js";
   import Modal from "@/components/ModalName.vue";
 
   //variables (reactive)
   const years = ref([]);
   const subjects = ref([]);
   const courses = ref([]);
+  const groups = ref([]);
+  
   const selectedYear = ref(null);
+  const selectedCourse = ref(null);
+
   const modalRef = ref(null);
   const modalConfig = ref({});
   
@@ -29,6 +33,14 @@
     courses.value = await getCourses(selectedYear.value);
   }
 
+  //dropdown loaded when select course
+    const getGroupsForDropdown = async () => {
+    if(!selectedCourse.value){
+      return;
+    }
+    groups.value = await getGroups(selectedCourse.value);
+  }
+
   //load dropdowns when open component
   onMounted(async () => {
     await getYearsForDropdown();
@@ -45,15 +57,34 @@
         buttonText: "Agregar Año",
         submitHandler: handleAddYear
       };
+    } 
     //type add subject
-    } else if (type === "subject") {
+    else if (type === "subject") {
       modalConfig.value = {
         title: "Ingresar Nombre de la Asignatura",
         placeholder: "Nombre de la Asignatura",
         buttonText: "Agregar Asignatura",
         submitHandler: handleAddSubject
       };
+    } 
+    //type add curso
+    else if (type === "course") {
+      modalConfig.value = {
+        title: "Ingresar Nombre del Curso",
+        placeholder: "Nombre del Curso",
+        buttonText: "Agregar Curso",
+        submitHandler: handleAddCourse
+      };
     }
+    //type add grupo
+    else if (type === "group") {
+      modalConfig.value = {
+        title: "Ingresar Nombre del Grupo",
+        placeholder: "Nombre del Grupo",
+        buttonText: "Agregar Grupo",
+        submitHandler: handleAddGroup
+      };
+    } 
     modalRef.value.openModal();
   };
   
@@ -80,11 +111,55 @@
       }
     }
   }
+
+  //add course
+  const handleAddCourse = async (courseName) => {
+    if (!selectedYear.value) {
+      console.error("No se ha seleccionado un año.");
+      return;
+    }
+    
+    if (courseName.trim() !== "") {
+      //add course
+      const response = await addCourse(courseName, selectedYear.value);
+      if (response) {
+        //reload dropdown
+        await getCoursesForDropdown();
+      }
+    }
+  }
+
+  //add group
+  const handleAddGroup = async (groupName) => {
+    if (groupName.trim() !== "") {
+      //add group
+      const response = await addGroup(groupName);
+      if (response) {
+        //reload dropdown
+        await getGroupsForDropdown();
+      }
+    }
+  }
 </script>
 
 <template>
   <div class="navbar-container">
     <div class="dropdowns-container">
+      <!--dorpdown subject-->
+      <div class="dropdown">
+        <label for="dropdown4" class="text-white">Asignatura</label>
+        <div class="dropdownRow">
+          <select id="dropdown4" class="form-control">
+            <option v-for="subject in subjects" :key="subject">{{ subject }}</option>
+          </select>
+          <button class="btn btn-success" @click="openModal('subject')">
+            <i class="bi bi-plus"></i>
+          </button>
+          <button class="btn btn-danger" @click="deleteSubject">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
       <!--dorpdown year-->
       <div class="dropdown">
         <label for="dropdownYear" class="text-white">Año</label>
@@ -105,10 +180,11 @@
       <div class="dropdown">
         <label for="dropdownCourse" class="text-white">Curso</label>
         <div class="dropdownRow">
-          <select id="dropdownCourse" class="form-control">
+          <!--if course selected then load groups-->
+          <select id="dropdownCourse" class="form-control" v-model="selectedCourse" @change="getGroupsForDropdown">
             <option v-for="course in courses" :key="course">{{ course }}</option>
           </select>
-          <button class="btn btn-success" @click="addCourse">
+          <button class="btn btn-success" @click="openModal('course')">
             <i class="bi bi-plus"></i>
           </button>
           <button class="btn btn-danger" @click="deleteCourse">
@@ -121,29 +197,12 @@
         <label for="dropdownGroup" class="text-white">Grupo</label>
         <div class="dropdownRow">
           <select id="dropdownGroup" class="form-control">
-            <option>A</option>
-            <option>B</option>
-            <option>-</option>
+            <option v-for="group in groups" :key="group">{{ group }}</option>
           </select>
-          <button class="btn btn-success" @click="addGroup">
+          <button class="btn btn-success" @click="openModal('group')">
             <i class="bi bi-plus"></i>
           </button>
           <button class="btn btn-danger" @click="deleteGroup">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      </div>
-      <!--dorpdown subject-->
-      <div class="dropdown">
-        <label for="dropdown4" class="text-white">Asignatura</label>
-        <div class="dropdownRow">
-          <select id="dropdown4" class="form-control">
-            <option v-for="subject in subjects" :key="subject">{{ subject }}</option>
-          </select>
-          <button class="btn btn-success" @click="openModal('subject')">
-            <i class="bi bi-plus"></i>
-          </button>
-          <button class="btn btn-danger" @click="deleteSubject">
             <i class="bi bi-trash"></i>
           </button>
         </div>
