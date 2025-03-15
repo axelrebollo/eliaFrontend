@@ -11,7 +11,7 @@
   const subjects = ref([]);
   const courses = ref([]);
   const groups = ref([]);
-  const table = ref([]);
+  const tables = ref([]);
   
   //selections in dropdowns
   const selectedYear = ref(null);
@@ -38,25 +38,29 @@
     if(!selectedYear.value){
       courses.value = []; //clean courses if year not selected
       groups.value = [];  //clear groups if year not selected
-      table.value = []; //clear table if year not selected
+      tables.value = []; //clear table if year not selected
       return;
     }
     courses.value = await getCourses(selectedYear.value);
     selectedCourse.value = null; //clean course selected
     groups.value = [];  //clean groups
-    table.value = []; //clean table
+    tables.value = []; //clean table
   }
 
   //load groups dropdown when select subject, year, course
     const getGroupsForDropdown = async () => {
     if(!selectedCourse.value || !selectedSubject.value || !selectedYear.value){
       groups.value = [];  //clear groups if year not selected
-      table.value = []; //clear table if year not selected
+      tables.value = []; //clear table if year not selected
       return;
     }
     groups.value = await getGroups(selectedCourse.value, selectedSubject.value, selectedYear.value);
     selectedGroup.value = []; //clean group
-    table.value = []; //clean table
+    tables.value = []; //clean table
+  }
+
+  const getTablesForDropdown = async () => {
+    console.log("POR TERMINAR LA CARGA DE LAS PÁGINAS DEL DROPDOWN");
   }
 
   //load dropdowns when open component
@@ -223,7 +227,7 @@
       <div class="dropdown">
         <label for="dropdownGroup" class="text-white">Grupo</label>
         <div class="dropdownRow">
-          <select id="dropdownGroup" class="form-control">
+          <select id="dropdownGroup" class="form-control" v-model="selectedGroup" @change="getTablesForDropdown">
             <option v-for="group in groups" :key="group">{{ group }}</option>
           </select>
           <button class="btn btn-success" @click="openModal('group')">
