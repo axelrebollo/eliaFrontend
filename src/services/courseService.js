@@ -22,7 +22,7 @@ const getCourses = async (nameYear) => {
 };
 
 //addCourse
-const addCourse = async (nameCourse, nameYear) => {
+const addCourse = async (nameCourse, nameSubject, nameYear) => {
   const authStore = useAuthStore();
   if (!authStore.token) {
     console.error("No hay token disponible.");
@@ -31,7 +31,7 @@ const addCourse = async (nameCourse, nameYear) => {
 
   try {
     const response = await api.apiCourses.post(
-      `/addCourse?token=${authStore.token}&nameCourse=${nameCourse}&nameYear=${nameYear}`,
+      `/addCourse?token=${authStore.token}&nameCourse=${nameCourse}&nameSubject=${nameSubject}&nameYear=${nameYear}`,
       {},
       {
         headers: { Authorization: `Bearer ${authStore.token}` },

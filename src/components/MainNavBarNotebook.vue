@@ -3,6 +3,7 @@
   import { getYears, addYear } from "@/services/yearService.js";
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse } from "@/services/courseService.js";
+  import { getGroups } from "@/services/groupService.js";
   import Modal from "@/components/ModalName.vue";
 
   //variables (reactive)
@@ -10,35 +11,52 @@
   const subjects = ref([]);
   const courses = ref([]);
   const groups = ref([]);
+  const table = ref([]);
   
+  //selections in dropdowns
   const selectedYear = ref(null);
   const selectedCourse = ref(null);
+  const selectedSubject = ref(null);
+  const selectedGroup = ref(null);
 
+  //modal variables
   const modalRef = ref(null);
   const modalConfig = ref({});
   
+  //load dropdown years
   const getYearsForDropdown = async () => {
     years.value = await getYears();
   }
 
+  //load dropdown subjects
   const getSubjectsForDropdown = async () => {
     subjects.value = await getSubjects();
   }
 
-  //dropdown loaded when select year
+  //load courses dropdown when select year
   const getCoursesForDropdown = async () => {
     if(!selectedYear.value){
+      courses.value = []; //clean courses if year not selected
+      groups.value = [];  //clear groups if year not selected
+      table.value = []; //clear table if year not selected
       return;
     }
     courses.value = await getCourses(selectedYear.value);
+    selectedCourse.value = null; //clean course selected
+    groups.value = [];  //clean groups
+    table.value = []; //clean table
   }
 
-  //dropdown loaded when select course
+  //load groups dropdown when select subject, year, course
     const getGroupsForDropdown = async () => {
-    if(!selectedCourse.value){
+    if(!selectedCourse.value || !selectedSubject.value || !selectedYear.value){
+      groups.value = [];  //clear groups if year not selected
+      table.value = []; //clear table if year not selected
       return;
     }
-    groups.value = await getGroups(selectedCourse.value);
+    groups.value = await getGroups(selectedCourse.value, selectedSubject.value, selectedYear.value);
+    selectedGroup.value = []; //clean group
+    table.value = []; //clean table
   }
 
   //load dropdowns when open component
@@ -82,6 +100,15 @@
         title: "Ingresar Nombre del Grupo",
         placeholder: "Nombre del Grupo",
         buttonText: "Agregar Grupo",
+        submitHandler: handleAddGroup
+      };
+    } 
+    //type add table
+    else if (type === "table") {
+      modalConfig.value = {
+        title: "Ingresar Nombre de la página(tabla)",
+        placeholder: "Nombre de la página",
+        buttonText: "Agregar página",
         submitHandler: handleAddGroup
       };
     } 
@@ -149,7 +176,7 @@
       <div class="dropdown">
         <label for="dropdown4" class="text-white">Asignatura</label>
         <div class="dropdownRow">
-          <select id="dropdown4" class="form-control">
+          <select id="dropdown4" class="form-control" v-model="selectedSubject" @change="getGroupsForDropdown">
             <option v-for="subject in subjects" :key="subject">{{ subject }}</option>
           </select>
           <button class="btn btn-success" @click="openModal('subject')">
