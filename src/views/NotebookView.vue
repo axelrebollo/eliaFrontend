@@ -31,6 +31,6 @@
   .containerNotebook {
     display: flex;
     flex-direction: row;
-    gap: 1rem;
+    gap: 150px;
   }
 </style>

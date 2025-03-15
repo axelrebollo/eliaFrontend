@@ -207,14 +207,21 @@
           </button>
         </div>
       </div>
-      <!--load table-->
-      <button class="btn btn-secondary w-100 mt-3" @click="loadTable">
-        <i class="bi bi-cloud-upload">&nbsp</i>Cargar tabla
-      </button>
-      <!--create table-->
-      <button class="btn btn-success w-100 mt-3" @click="createTable">
-        <i class="bi bi-plus">&nbsp</i>Crear tabla
-      </button> 
+      <!--dropdown table-->
+      <div class="dropdown">
+        <label for="dropdownTable" class="text-white">Página</label>
+        <div class="dropdownRow">
+          <select id="dropdownTable" class="form-control">
+            <option v-for="table in tables" :key="table">{{ table }}</option>
+          </select>
+          <button class="btn btn-success" @click="openModal('table')">
+            <i class="bi bi-plus"></i>
+          </button>
+          <button class="btn btn-danger" @click="deleteTable">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div> 
     </div>
     <!--Dynamic modal to add something name-->
     <Modal
@@ -259,7 +266,8 @@
     color: white;
     border-color: #6c757d;
     width: 100%;
-    max-width: 200px;
+    max-width: 300px;
+    min-width: 250px; /*min with for dropdowns fixed*/
   }
 
   .form-control:focus {
