@@ -3,7 +3,7 @@
   import { getYears, addYear } from "@/services/yearService.js";
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse } from "@/services/courseService.js";
-  import { getGroups } from "@/services/groupService.js";
+  import { getGroups, addGroup } from "@/services/groupService.js";
   import Modal from "@/components/ModalName.vue";
 
   //variables (reactive)
@@ -162,9 +162,14 @@
 
   //add group
   const handleAddGroup = async (groupName) => {
+    if(!selectedYear.value || !selectedCourse.value || !selectedSubject.value){
+      console.log("Falta por seleccionar algún parametro.");
+      return;
+    }
+
     if (groupName.trim() !== "") {
       //add group
-      const response = await addGroup(groupName);
+      const response = await addGroup(selectedCourse.value, selectedSubject.value, selectedYear.value, groupName);
       if (response) {
         //reload dropdown
         await getGroupsForDropdown();

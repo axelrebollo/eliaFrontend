@@ -21,6 +21,30 @@ const getGroups = async (nameCourse, nameSubject, nameYear) => {
     }
 };
 
+//addGroup
+const addGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return;
+  }
+
+  try {
+    const response = await api.apiGroups.post(
+      `/addGroup?token=${authStore.token}&nameCourse=${nameCourse}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameGroup=${nameGroup}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error agregando el grupo:", error.response?.data || error.message);
+    return null;
+  }
+};
+
 export{
     getGroups,
+    addGroup,
 }
