@@ -1,10 +1,13 @@
-<script setup></script>
+<script setup>
+//TODO
+
+//necesario recoger la información de la tabla seleccionada
+</script>
 
 <template>
   <div class="notebook-container">
     <div class="table-container">
-      <h2 class="table-title">Música</h2>
-      <h3 class="table-subtitle">Código de la materia: 3xnUL245</h3>
+      <h3 class="table-subtitle">Código de la materia: {{ tableCode }}</h3>
       <table class="table table-dark table-striped">
         <thead>
           <tr>

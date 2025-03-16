@@ -1,11 +1,32 @@
 <script setup>
   import MainNavBarNotebook from "@/components/MainNavBarNotebook.vue";
   import Notebook from "@/components/Notebook.vue";
+  import { onMounted, ref, watch } from "vue";
+  import { useProfileStore } from "@/stores/profileStore";
+
+  //variables
+  const profileStore = useProfileStore();
+  const name = ref("");
+  const surname1 = ref("");
+  const surname2 = ref("");
+
+  //inizialices when opening notebook view
+  onMounted(async () => {
+    //get profile
+    await profileStore.fetchProfile();
+
+    //load variables to view
+    name.value = profileStore.profile.name;
+    surname1.value = profileStore.profile.surname1;
+    surname2.value = profileStore.profile.surname2;
+  });
+
 </script>
 
 <template>
   <div>
-    <h2>Libro de notas de: Èlia Serrán Villar</h2>
+    <!--dynamic load for name and surnames about user-->
+    <h2>Libro de notas de: {{ name }} {{ surname1 }} {{ surname2}}</h2>
     <div class="containerNotebook">
       <MainNavBarNotebook/>
       <Notebook/>
