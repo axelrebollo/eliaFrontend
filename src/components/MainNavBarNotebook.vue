@@ -71,6 +71,10 @@
     selectedTable.value = null; //clean table
   }
 
+  const loadTableComponent = () => {
+    alert("CARGANDO TABLA DE NOTAS");
+  }
+
   //load dropdowns when open component
   onMounted(async () => {
     await getYearsForDropdown();
@@ -121,7 +125,7 @@
         title: "Ingresar Nombre de la página(tabla)",
         placeholder: "Nombre de la página",
         buttonText: "Agregar página",
-        submitHandler: handleAddGroup
+        submitHandler: handleAddTable
       };
     } 
     modalRef.value.openModal();
@@ -155,6 +159,7 @@
   const handleAddCourse = async (courseName) => {
     if (!selectedYear.value) {
       console.error("No se ha seleccionado un año.");
+      alert("Debe seleccionar un año existente.");
       return;
     }
     
@@ -171,7 +176,8 @@
   //add group
   const handleAddGroup = async (groupName) => {
     if(!selectedYear.value || !selectedCourse.value || !selectedSubject.value){
-      console.log("Falta por seleccionar algún parametro.");
+      console.log("Falta por seleccionar algún parametro.(año, curso)");
+      alert("Debe seleccionar un año y un curso.");
       return;
     }
 
@@ -181,6 +187,24 @@
       if (response) {
         //reload dropdown
         await getGroupsForDropdown();
+      }
+    }
+  }
+
+  //add table
+  const handleAddTable = async (tableName) => {
+    if(!selectedYear.value || !selectedCourse.value || !selectedSubject.value || !selectedGroup.value){
+      console.log("Falta por seleccionar algún parametro.(año, curso, grupo, asignatura)");
+      alert("Debe seleccionar una asignatura, año, curso, grupo.");
+      return;
+    }
+
+    if (tableName.trim() !== "") {
+      //add table
+      const response = await addTable(selectedSubject.value, selectedYear.value, selectedCourse.value, selectedGroup.value, tableName);
+      if (response) {
+        //reload dropdown
+        await getTablesForDropdown();
       }
     }
   }
@@ -255,7 +279,7 @@
       <div class="dropdown">
         <label for="dropdownTable" class="text-white">Página</label>
         <div class="dropdownRow">
-          <select id="dropdownTable" class="form-control" v-model="selectedTable">
+          <select id="dropdownTable" class="form-control" v-model="selectedTable" @change="loadTableComponent">
             <option v-for="table in tables" :key="table">{{ table }}</option>
           </select>
           <button class="btn btn-success" @click="openModal('table')">
