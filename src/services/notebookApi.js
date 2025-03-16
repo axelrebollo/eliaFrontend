@@ -32,9 +32,18 @@ const apiGroups = axios.create({
   },
 });
 
+//Axios requests tables
+const apiTables = axios.create({
+  baseURL: "http://localhost:18091/tables",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export default {
   apiYears,
   apiSubjects,
   apiCourses,
   apiGroups,
+  apiTables,
 };

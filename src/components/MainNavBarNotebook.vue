@@ -4,11 +4,12 @@
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse } from "@/services/courseService.js";
   import { getGroups, addGroup } from "@/services/groupService.js";
+  import { getTables, addTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
 
   //variables (reactive)
-  const years = ref([]);
   const subjects = ref([]);
+  const years = ref([]);
   const courses = ref([]);
   const groups = ref([]);
   const tables = ref([]);
@@ -18,6 +19,7 @@
   const selectedCourse = ref(null);
   const selectedSubject = ref(null);
   const selectedGroup = ref(null);
+  const selectedTable = ref(null);
 
   //modal variables
   const modalRef = ref(null);
@@ -48,19 +50,25 @@
   }
 
   //load groups dropdown when select subject, year, course
-    const getGroupsForDropdown = async () => {
+  const getGroupsForDropdown = async () => {
     if(!selectedCourse.value || !selectedSubject.value || !selectedYear.value){
       groups.value = [];  //clear groups if year not selected
       tables.value = []; //clear table if year not selected
       return;
     }
     groups.value = await getGroups(selectedCourse.value, selectedSubject.value, selectedYear.value);
-    selectedGroup.value = []; //clean group
+    selectedGroup.value = null; //clean group selected
     tables.value = []; //clean table
   }
 
+  //load tables dropdown when select subject, year, course, group
   const getTablesForDropdown = async () => {
-    console.log("POR TERMINAR LA CARGA DE LAS PÁGINAS DEL DROPDOWN");
+    if(!selectedSubject.value || !selectedYear.value || !selectedCourse.value || !selectedGroup.value){
+      tables.value = []; //clear table if year not selected
+      return;
+    }
+    tables.value = await getTables(selectedSubject.value, selectedYear.value, selectedCourse.value, selectedGroup.value);
+    selectedTable.value = null; //clean table
   }
 
   //load dropdowns when open component
@@ -247,7 +255,7 @@
       <div class="dropdown">
         <label for="dropdownTable" class="text-white">Página</label>
         <div class="dropdownRow">
-          <select id="dropdownTable" class="form-control">
+          <select id="dropdownTable" class="form-control" v-model="selectedTable">
             <option v-for="table in tables" :key="table">{{ table }}</option>
           </select>
           <button class="btn btn-success" @click="openModal('table')">

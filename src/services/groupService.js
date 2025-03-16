@@ -11,7 +11,7 @@ const getGroups = async (nameCourse, nameSubject, nameYear) => {
 
     try {
         const response = await api.apiGroups.get(`/getGroup?token=${authStore.token}&nameCourse=${nameCourse}&nameSubject=${nameSubject}&nameYear=${nameYear}`,{
-        headers: {Authorization: `Bearer ${authStore.token}`},
+          headers: {Authorization: `Bearer ${authStore.token}`},
         });
         return response.data.groups;
     }
