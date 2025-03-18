@@ -2,6 +2,7 @@
   import { onMounted, ref, watch } from "vue";
   import { useProfileStore } from "@/stores/profileStore";
   import { useAuthStore } from "@/stores/authStore";
+  import { getTeacherTableProfile  } from "@/services/classroomProfileService.js";
 
   //variables
   const profileStore = useProfileStore();
@@ -11,6 +12,7 @@
   const surname2 = ref("");
   const email = ref(authStore.email);
   const role = ref("");
+  const clases = ref([]);
 
   //inicializes when opening the profile 
   onMounted(async ()=>{
@@ -31,6 +33,21 @@
     }
     else{
       role.value = "";
+    }
+
+    //get table classrooms
+    try{
+      const response = await getTeacherTableProfile();
+      clases.value = response.rows.map(row => ({
+        codigo: row.classCode,
+        anio: row.nameYear,
+        curso: row.nameCourse,
+        grupo: row.nameGroup,
+        asignatura: row.nameSubject
+      }));
+    }
+    catch(error){
+      console.log("Error al cargar la tabla: ", error);
     }
   });
 
