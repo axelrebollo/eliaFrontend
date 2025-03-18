@@ -43,7 +43,8 @@
         anio: row.nameYear,
         curso: row.nameCourse,
         grupo: row.nameGroup,
-        asignatura: row.nameSubject
+        asignatura: row.nameSubject,
+        pagina: row.nameTable,
       }));
     }
     catch(error){
@@ -128,6 +129,7 @@
                 <th>Curso</th>
                 <th>Grupo</th>
                 <th>Asignatura</th>
+                <th>Página</th>
               </tr>
             </thead>
             <tbody>
@@ -137,6 +139,7 @@
                 <td>{{ clase.curso }}</td>
                 <td>{{ clase.grupo }}</td>
                 <td>{{ clase.asignatura }}</td>
+                <td>{{ clase.pagina }}</td>
               </tr>
             </tbody>
           </table>

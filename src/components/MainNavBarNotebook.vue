@@ -165,7 +165,7 @@
     
     if (courseName.trim() !== "") {
       //add course
-      const response = await addCourse(courseName, selectedYear.value);
+      const response = await addCourse(courseName, selectedSubject.value, selectedYear.value);
       if (response) {
         //reload dropdown
         await getCoursesForDropdown();
