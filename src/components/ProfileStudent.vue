@@ -2,17 +2,17 @@
   import { onMounted, ref, watch } from "vue";
   import { useProfileStore } from "@/stores/profileStore";
   import { useAuthStore } from "@/stores/authStore";
-
-  const profileStore = useProfileStore();
-  const authStore = useAuthStore();
+  import { getTableProfile  } from "@/services/classroomProfileService.js";
 
   //variables
+  const profileStore = useProfileStore();
+  const authStore = useAuthStore();
   const name = ref("");
   const surname1 = ref("");
   const surname2 = ref("");
   const email = ref(authStore.email);
   const role = ref("");
-  const classCode = ref("");
+  const clases = ref("");
 
   //inicializes when opening the profile
   onMounted(async ()=>{
@@ -31,6 +31,22 @@
     }
     else{
       role.value = "";
+    }
+
+    //get table classrooms
+    try{
+      const response = await getTableProfile();
+      clases.value = response.rows.map(row => ({
+        codigo: row.classCode,
+        anio: row.nameYear,
+        curso: row.nameCourse,
+        grupo: row.nameGroup,
+        asignatura: row.nameSubject,
+        pagina: row.nameTable,
+      }));
+    }
+    catch(error){
+      console.log("Error al cargar la tabla: ", error);
     }
   });
 
@@ -126,15 +142,17 @@
                 <th>Curso</th>
                 <th>Grupo</th>
                 <th>Asignatura</th>
+                <th>Página</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="clase in clases" :key="clase.codigo">
-                <td>{{ clase.code }}</td>
-                <td>{{ clase.year }}</td>
-                <td>{{ clase.course }}</td>
-                <td>{{ clase.group }}</td>
-                <td>{{ clase.subject }}</td>
+                <td>{{ clase.codigo }}</td>
+                <td>{{ clase.anio }}</td>
+                <td>{{ clase.curso }}</td>
+                <td>{{ clase.grupo }}</td>
+                <td>{{ clase.asignatura }}</td>
+                <td>{{ clase.pagina }}</td>
               </tr>
             </tbody>
           </table>

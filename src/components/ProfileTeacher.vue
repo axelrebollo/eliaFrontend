@@ -2,7 +2,7 @@
   import { onMounted, ref, watch } from "vue";
   import { useProfileStore } from "@/stores/profileStore";
   import { useAuthStore } from "@/stores/authStore";
-  import { getTeacherTableProfile  } from "@/services/classroomProfileService.js";
+  import { getTableProfile  } from "@/services/classroomProfileService.js";
 
   //variables
   const profileStore = useProfileStore();
@@ -37,7 +37,7 @@
 
     //get table classrooms
     try{
-      const response = await getTeacherTableProfile();
+      const response = await getTableProfile();
       clases.value = response.rows.map(row => ({
         codigo: row.classCode,
         anio: row.nameYear,
@@ -68,7 +68,7 @@
     }
     
     try {
-      //update profile call
+      //update profile
       const success = await profileStore.updateProfile({
         name: name.value,
         surname1: surname1.value,

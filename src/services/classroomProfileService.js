@@ -2,7 +2,7 @@ import api from "./notebookApi.js";
 import { useAuthStore } from "@/stores/authStore.js";
 
 //Get table for teacher profile
-const getTeacherTableProfile = async () => {
+const getTableProfile = async () => {
   const authStore = useAuthStore();
   if (!authStore.token) {
     console.error("No hay token disponible.");
@@ -24,4 +24,4 @@ const getTeacherTableProfile = async () => {
   }
 };
 
-export { getTeacherTableProfile };
+export { getTableProfile };
