@@ -40,6 +40,7 @@ const addGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
     return response.data;
   } catch (error) {
     console.error("Error agregando el grupo:", error.response?.data || error.message);
+    alert("Error agregando el grupo: "+error.response.data.mensaje);
     return null;
   }
 };

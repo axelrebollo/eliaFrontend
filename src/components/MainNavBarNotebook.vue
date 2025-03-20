@@ -6,6 +6,7 @@
   import { getGroups, addGroup } from "@/services/groupService.js";
   import { getTables, addTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
+  import { useNotebookStore } from '@/stores/notebookStore';
 
   //variables (reactive)
   const subjects = ref([]);
@@ -71,8 +72,15 @@
     selectedTable.value = null; //clean table
   }
 
+  const store = useNotebookStore();
+
   const loadTableComponent = () => {
-    alert("CARGANDO TABLA DE NOTAS");
+    if (!selectedGroup.value || !selectedTable.value) {
+      alert("Debe seleccionar una tabla.");
+      return;
+    }
+
+    store.loadTable(selectedGroup.value, selectedTable.value);
   }
 
   //load dropdowns when open component

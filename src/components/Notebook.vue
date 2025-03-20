@@ -1,7 +1,18 @@
 <script setup>
-//TODO
+  import { useNotebookStore } from '@/stores/notebookStore';
+  import { watch } from 'vue';
 
-//necesario recoger la información de la tabla seleccionada
+  const store = useNotebookStore();
+
+  //is executed always that change selectedTable
+  //the selectedGroup not change if not select table is for this that is not monitorized
+  watch(() => store.selectedTable, (newVal) => {
+      if (newVal) {
+
+      //console.log("Datos recibidos en Notebook:", store.selectedGroup, newVal);
+      //alert(`Cargando tabla ${newVal} para el grupo ${store.selectedGroup}`);
+      }
+  });
 </script>
 
 <template>

@@ -39,6 +39,7 @@ const addSubject = async (nameSubject) => {
     return response.data;
   } catch (error) {
     console.error("Error agregando el año:", error.response?.data || error.message);
+    alert("Error agregando la asignatura: "+error.response.data.mensaje);
     return null;
   }
 };

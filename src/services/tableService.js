@@ -1,3 +1,4 @@
+import { Alert } from "bootstrap/dist/js/bootstrap.bundle.min.js";
 import api from "./notebookApi.js"
 import { useAuthStore } from "@/stores/authStore.js";
 
@@ -40,6 +41,7 @@ const addTable = async (nameSubject, nameYear, nameCourse, nameGroup, nameTable)
     return response.data;
   } catch (error) {
     console.error("Error agregando la tabla:", error.response?.data || error.message);
+    alert("Error agregando la tabla: "+error.response.data.mensaje);
     return null;
   }
 };

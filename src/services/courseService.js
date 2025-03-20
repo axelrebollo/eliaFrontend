@@ -40,6 +40,7 @@ const addCourse = async (nameCourse, nameSubject, nameYear) => {
     return response.data;
   } catch (error) {
     console.error("Error agregando el curso:", error.response?.data || error.message);
+    alert("Error agregando el curso: "+error.response.data.mensaje);
     return null;
   }
 };

@@ -40,6 +40,7 @@ const addYear = async (nameYear) => {
     return response.data;
   } catch (error) {
     console.error("Error agregando el año:", error.response?.data || error.message);
+    alert("Error agregando el año: "+error.response.data.mensaje);
     return null;
   }
 };
