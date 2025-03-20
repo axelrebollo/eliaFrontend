@@ -24,4 +24,30 @@ const getTableProfile = async () => {
   }
 };
 
-export { getTableProfile };
+//enrollClassroom
+const enrollClassroom = async (classCode) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return;
+  }
+
+  try {
+    const response = await api.apiClassroomProfile.put(
+      `/enrollClassroom?token=${authStore.token}&classCode=${classCode}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error en la inscripción del alumno en la clase:", error.response?.data || error.message);
+    return null;
+  }
+};
+
+export { 
+  getTableProfile,
+  enrollClassroom,
+ };

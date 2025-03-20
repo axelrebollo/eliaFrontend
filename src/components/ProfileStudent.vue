@@ -2,7 +2,7 @@
   import { onMounted, ref, watch } from "vue";
   import { useProfileStore } from "@/stores/profileStore";
   import { useAuthStore } from "@/stores/authStore";
-  import { getTableProfile  } from "@/services/classroomProfileService.js";
+  import { getTableProfile,enrollClassroom } from "@/services/classroomProfileService.js";
 
   //variables
   const profileStore = useProfileStore();
@@ -13,6 +13,7 @@
   const email = ref(authStore.email);
   const role = ref("");
   const clases = ref("");
+  const classCode = ref("");
 
   //inicializes when opening the profile
   onMounted(async ()=>{
@@ -83,9 +84,27 @@
   };
 
   //insert an code to add student into class
-  const addClass = () => {
-    console.log(classCode.value);
-    //TODO
+  const enrollClass = async () => {
+    if(classCode.value.trim() === ""){
+      console.log("Falta por insertar el código clase.");
+      alert("Debe insertar un código clase.");
+      return;
+    }
+    
+    const response = await enrollClassroom(classCode.value); 
+    try {
+      const updatedResponse = await getTableProfile();
+      clases.value = updatedResponse.rows.map(row => ({
+        codigo: row.classCode,
+        anio: row.nameYear,
+        curso: row.nameCourse,
+        grupo: row.nameGroup,
+        asignatura: row.nameSubject,
+        pagina: row.nameTable,
+      }));
+    } catch (error) {
+      console.log("Error al recargar la tabla: ", error);
+    }
   };
 </script>
 
@@ -120,7 +139,7 @@
               <label for="classCode" class="form-label text-white">Añadir código clase</label>
               <div class="addClass">
                 <input v-model="classCode" type="text" class="form-control" id="classCode" placeholder="Código clase" />
-                <button type="button" class="btn btn-secondary" @click="addClass">
+                <button type="button" class="btn btn-secondary" @click="enrollClass">
                   Añadir clase
                 </button>
               </div>
