@@ -79,8 +79,9 @@
       alert("Debe seleccionar una tabla.");
       return;
     }
-
-    store.loadTable(selectedGroup.value, selectedTable.value);
+    if(selectedSubject.value && selectedYear.value && selectedCourse.value && selectedGroup.value && selectedTable.value){
+      store.loadTable(selectedSubject.value, selectedYear.value, selectedCourse.value, selectedGroup.value, selectedTable.value);
+    }
   }
 
   //load dropdowns when open component

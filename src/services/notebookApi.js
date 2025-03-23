@@ -48,6 +48,14 @@ const apiClassroomProfile = axios.create({
   },
 });
 
+//Axios requests classroomsProfile
+const apiCells = axios.create({
+  baseURL: "http://localhost:18091/cells",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export default {
   apiYears,
   apiSubjects,
@@ -55,4 +63,5 @@ export default {
   apiGroups,
   apiTables,
   apiClassroomProfile,
+  apiCells,
 };

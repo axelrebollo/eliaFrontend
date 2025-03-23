@@ -1,18 +1,65 @@
 <script setup>
+  import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { watch } from 'vue';
+  import { getCellsForTable } from '@/services/cellService.js';
 
-  const store = useNotebookStore();
-
+  //variables
+  const store = useNotebookStore();  
+  const headers = ref([]);
+  const rawData = ref([]);
+  
   //is executed always that change selectedTable
-  //the selectedGroup not change if not select table is for this that is not monitorized
-  watch(() => store.selectedTable, (newVal) => {
-      if (newVal) {
-
-      //console.log("Datos recibidos en Notebook:", store.selectedGroup, newVal);
-      //alert(`Cargando tabla ${newVal} para el grupo ${store.selectedGroup}`);
-      }
+  watch(() => store.selectedTable, (newSelectionTable) => {
+    if (newSelectionTable) {
+      loadTableData(newSelectionTable);
+    }
   });
+
+  async function loadTableData(newSelectionTable) {
+    try {
+      //call service
+      const cells = await getCellsForTable(
+        store.selectedSubject,
+        store.selectedYear,
+        store.selectedCourse,
+        store.selectedGroup,
+        newSelectionTable,
+      );
+    
+      //build data table
+      if (cells.tableCells.length > 0) {
+        //extract headers that exist into first row with position row 0 and save nameTask
+        headers.value = cells.tableCells
+          .flatMap(row => row.rowNotebook)  //transform row array into individual cells list
+          .filter(cell => cell.positionRow === 0) //if positionRow is 0, header task
+          .sort((a, b) => a.positionCol - b.positionCol)  //order tasks for position column, use sort algorithm
+          .map(cell => cell.name);  //extract task names (result is an array of strings)
+
+        //extract students that exist into next rows
+        const students = cells.tableCells
+          .flatMap(row => row.rowNotebook)  //transform row array into individual cells list
+          .filter(cell => cell.positionCol === 0 && cell.positionRow > 0) //if position column is 0 and position row is not 0, is student
+          .sort((a, b) => a.positionRow - b.positionRow); //order students for position row, use sort algorithm
+
+        //extract notes that exist into rows
+        rawData.value = students.map(student => {
+          const studentNotes = cells.tableCells
+            .flatMap(row => row.rowNotebook)  //transform row array into individual cells list
+            .filter(cell => cell.positionRow === student.positionRow && cell.name === "NOTE") //if position row is the same that student and name is NOTE, is note for student
+            .sort((a, b) => a.positionCol - b.positionCol)  //order students for position column, use sort algorithm
+            .map(cell => cell.note);  //extract note number (result is an array of student with notes)
+
+          return { name: student.name, notes: studentNotes };
+        });
+
+        //clean table for new selection
+        store.selectedTable = null;
+      }
+    } 
+    catch (error) {
+      console.error("Error al obtener las celdas:", error);
+    }
+  };
 </script>
 
 <template>
@@ -23,27 +70,27 @@
         <thead>
           <tr>
             <th>Alumnos</th>
-            <th>
-              <button class="btn btn-success btn-sm">
-                <i class="bi bi-plus"></i>Task
-              </button>
-            </th>
-          </tr>
-          <tr>
-            <th>
-              <button class="btn btn-success btn-sm">
-                <i class="bi bi-plus"></i>Student
-              </button>
+            <!--generates dinamicly headers columns-->
+            <th v-for="(header, index) in headers" :key="index">
+              {{ header }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <!--Rows add dinamic load-->
+          <!--generates dinamicly student row with name-->
+          <tr v-for="(row, rowIndex) in rawData" :key="rowIndex">
+            <!--insert name student-->
+            <td>
+              {{ row.name }}
+            </td>
+            <!--insert notes from this student-->
+            <td v-for="(note, noteIndex) in row.notes" :key="noteIndex">
+              {{ note }}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
-
-    
   </div>
 </template>
 
