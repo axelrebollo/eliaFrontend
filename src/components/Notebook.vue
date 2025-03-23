@@ -25,6 +25,13 @@
         store.selectedGroup,
         newSelectionTable,
       );
+
+      //if in this table not exist data
+      if (!cells.tableCells || cells.tableCells.length === 0) {
+        headers.value = [];
+        rawData.value = [{ }];
+        return;
+      }
     
       //build data table
       if (cells.tableCells.length > 0) {
