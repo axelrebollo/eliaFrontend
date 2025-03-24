@@ -134,6 +134,11 @@
   //if user click out of menu area
   document.addEventListener('click', closeColumnMenu);
 
+  //functionalities for submenu 
+  function addTaskLeft(){
+    alert("Añadiendo tarea a la derecha");
+  }
+  
   function updateNameTask() {
     alert("Actualizando nombre de la tarea");
   }
@@ -174,6 +179,7 @@
               <div v-if="showColumnMenu && selectedColumn === index" class="column-menu" 
                   :style="{ top: menuColumnY + 'px', left: menuColumnX + 'px' }">
                 <ul>
+                  <li @click="addTaskLeft"><i class="bi bi-plus"></i> Añadir tarea</li>
                   <li @click="updateNameTask"><i class="bi bi-pencil"></i> Cambiar nombre</li>
                   <li @click="moveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
                   <li @click="moveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
