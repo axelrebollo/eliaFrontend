@@ -4,18 +4,18 @@
     const props = defineProps({
     //text 
     title: {
-        type: String,
-        required: true
+        type: String, 
+        default: '',
     },
     //input
     placeholder: {
-        type: String,
-        required: true
+        type: String, 
+        default: '',
     },
     //text button
     buttonText: {
-        type: String,
-        required: true
+        type: String, 
+        default: 'Aceptar',
     }
     });
 
