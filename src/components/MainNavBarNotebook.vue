@@ -346,27 +346,4 @@
     max-width: 300px;
     min-width: 250px; /*min with for dropdowns fixed*/
   }
-
-  .form-control:focus {
-    background-color: #343a40;
-    border-color: #007bff;
-    color: white;
-  }
-
-  .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-    padding: 5px 10px;
-    font-size: 14px;
-    height: 36px;
-  }
-
-  .btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
-  }
-
-  .text-white {
-    color: white;
-  }
 </style>

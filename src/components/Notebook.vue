@@ -1,9 +1,10 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTaskLeft } from '@/services/cellService.js';
+  import { getCellsForTable, addTask } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
+  import { onMounted } from 'vue';
 
   //variables
   const store = useNotebookStore();  
@@ -23,6 +24,17 @@
       loadClassCode(newSelectionTable);
       //load table
       loadTableData(newSelectionTable);
+    }
+  });
+
+  //save the table status if change component 
+  onMounted(() => {
+    if (store.selectedTable) {
+      const prevTable = store.selectedTable;
+      store.selectedTable = "";
+      setTimeout(() => {
+        store.selectedTable = prevTable;
+      }, 10);
     }
   });
 
@@ -145,12 +157,12 @@
   //open dynamic modal
   const openModal = (type) => {
     //type add task to right another task
-    if (type === "addTaskLeft") {
+    if (type === "addTask") {
       modalConfig.value = {
         title: "Agregar tarea a la izquierda",
         placeholder: "Nombre de la tarea",
         buttonText: "Agregar Tarea",
-        submitHandler: (nameNewTask) => handleAddTaskLeft(nameNewTask, selectedColumnName.value)
+        submitHandler: (nameNewTask) => handleAddTask(nameNewTask, selectedColumnName.value)
       };
     } 
     //type update name task
@@ -166,15 +178,15 @@
   };
 
   //call to backend add task right to reference task
-  const handleAddTaskLeft = async (nameNewTask, nameReferenceTask) => {
-    if(nameNewTask === "" || nameReferenceTask === "" || classCode.value === "" ||
+  const handleAddTask = async (nameNewTask, nameReferenceTask) => {
+    if(nameNewTask === "" || classCode.value === "" ||
       store.selectedSubject === "" || store.selectedYear === "" || store.selectedCourse === "" ||
       store.selectedGroup === ""){
         alert("Error seleccionando los datos.");
         return;
     }
     
-    const response = await addTaskLeft(
+    const response = await addTask(
       classCode.value, nameNewTask, nameReferenceTask,
       store.selectedSubject, store.selectedYear, store.selectedCourse, store.selectedGroup
     );
@@ -228,6 +240,10 @@
         <thead>
           <tr>
             <th>Alumnos</th>
+            <!--appear button + when exist table selected-->
+            <button class="btn btn-success" @click="openModal('addTask')" v-if="headers.length === 0 && classCode != ''">
+              <i class="bi bi-plus"></i>
+            </button>
             <!--generates dinamicly headers columns-->
             <th v-for="(header, index) in headers" :key="index">
               {{ header }}
@@ -238,7 +254,7 @@
               <div v-if="showColumnMenu && selectedColumn === index" class="column-menu" 
                   :style="{ top: menuColumnY + 'px', left: menuColumnX + 'px' }">
                 <ul>
-                  <li @click="openModal('addTaskLeft')"><i class="bi bi-plus"></i> Añadir tarea</li>
+                  <li @click="openModal('addTask')"><i class="bi bi-plus"></i> Añadir tarea</li>
                   <li @click="openModal('updateNameTask')"><i class="bi bi-pencil"></i> Cambiar nombre</li>
                   <li @click="moveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
                   <li @click="moveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
@@ -251,8 +267,8 @@
         <tbody>
           <!--generates dinamicly student row with name-->
           <tr v-for="(row, rowIndex) in rawData" :key="rowIndex">
-            <!--insert name student-->
-            <td>
+            <!--insert name student and apear button + when exist one student-->
+            <td v-if="row.name">
               {{ row.name }}
               <!--contextual menu STUDENT-->
               <button class="menu-button" @click="openStudentMenu($event, rowIndex)">

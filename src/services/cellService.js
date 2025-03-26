@@ -26,8 +26,8 @@ const getCellsForTable = async (nameSubject, nameYear, nameCourse, nameGroup, na
   }
 };
 
-//add task in left of position reference
-const addTaskLeft = async (classCode, nameNewTask, nameReferenceTask,
+//add task in right of position reference
+const addTask = async (classCode, nameNewTask, nameReferenceTask,
   nameSubject, nameYear, nameCourse, nameGroup) => {
   const authStore = useAuthStore();
   if (!authStore.token) {
@@ -36,7 +36,7 @@ const addTaskLeft = async (classCode, nameNewTask, nameReferenceTask,
   }
 
   try{
-    const response = await api.apiCells.put(`/addTaskLeft?token=${authStore.token}&classCode=${classCode}&nameNewTask=${nameNewTask}&nameReferenceTask=${nameReferenceTask}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}`,
+    const response = await api.apiCells.put(`/addTask?token=${authStore.token}&classCode=${classCode}&nameNewTask=${nameNewTask}&nameReferenceTask=${nameReferenceTask}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}`,
       { headers: {Authorization: `Bearer ${authStore.token}`},
     });
     return response.data;
@@ -50,5 +50,5 @@ const addTaskLeft = async (classCode, nameNewTask, nameReferenceTask,
 
 export { 
     getCellsForTable,
-    addTaskLeft,
+    addTask,
  };
