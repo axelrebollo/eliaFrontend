@@ -1,8 +1,9 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable } from '@/services/cellService.js';
+  import { getCellsForTable, addTaskLeft } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
+  import Modal from "@/components/ModalName.vue";
 
   //variables
   const store = useNotebookStore();  
@@ -10,6 +11,10 @@
   const rawData = ref([]);
   const clases = ref("");
   const classCode = ref("");
+
+  //modal variables
+  const modalRef = ref(null);
+  const modalConfig = ref({});
   
   //is executed always that change selectedTable
   watch(() => store.selectedTable, (newSelectionTable) => {
@@ -80,9 +85,6 @@
 
           return { name: student.name, notes: studentNotes };
         });
-
-        //clean table for new selection
-        store.selectedTable = null;
       }
     } 
     catch (error) {
@@ -106,6 +108,7 @@
     menuColumnX.value = event.pageX;  //save position x from click
     menuColumnY.value = event.pageY;  //save position y from click
     selectedColumn.value = index; //save selected column
+    selectedColumnName.value = headers.value[index];  //save the column selected
   };
 
   //reactive contextual variables for contextual menu students
@@ -134,29 +137,85 @@
   //if user click out of menu area
   document.addEventListener('click', closeColumnMenu);
 
-  //functionalities for submenu 
-  function addTaskLeft(){
-    alert("Añadiendo tarea a la derecha");
+  //FUNCTIONALITIES FOR CONTEX MENU
+
+  //reactive variables
+  const selectedColumnName = ref(""); 
+
+  //open dynamic modal
+  const openModal = (type) => {
+    //type add task to right another task
+    if (type === "addTaskLeft") {
+      modalConfig.value = {
+        title: "Agregar tarea a la izquierda",
+        placeholder: "Nombre de la tarea",
+        buttonText: "Agregar Tarea",
+        submitHandler: (nameNewTask) => handleAddTaskLeft(nameNewTask, selectedColumnName.value)
+      };
+    } 
+    //type update name task
+    else if (type === "updateNameTask") {
+      modalConfig.value = {
+        title: "Cambiar el nombre de la tarea",
+        placeholder: "Nuevo nombre de la tarea",
+        buttonText: "Actualizar nombre",
+        submitHandler: (newTaskName) => handleUpdateNameTask(newTaskName, selectedColumnName.value)
+      };
+    } 
+    modalRef.value.openModal();
+  };
+
+  //call to backend add task right to reference task
+  const handleAddTaskLeft = async (nameNewTask, nameReferenceTask) => {
+    if(nameNewTask === "" || nameReferenceTask === "" || classCode.value === "" ||
+      store.selectedSubject === "" || store.selectedYear === "" || store.selectedCourse === "" ||
+      store.selectedGroup === ""){
+        alert("Error seleccionando los datos.");
+        return;
+    }
+    
+    const response = await addTaskLeft(
+      classCode.value, nameNewTask, nameReferenceTask,
+      store.selectedSubject, store.selectedYear, store.selectedCourse, store.selectedGroup
+    );
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
   }
   
-  function updateNameTask() {
+  //call to backend update name task selected
+  function handleUpdateNameTask(newTaskName, nameReferenceTask) {
     alert("Actualizando nombre de la tarea");
+
+    //Datos que necesito
+    console.log("CODIGO CLASE: "+classCode.value);
+    console.log("NUEVO NOMBRE DE LA COLUMNA/TAREA: "+newTaskName);
+    console.log("NOMBRE DE LA TAREA DE REFERENCIA: "+nameReferenceTask);
+    console.log("ASIGNATURA: "+store.selectedSubject);
+    console.log("AÑO: "+store.selectedYear);
+    console.log("CURSO: "+store.selectedCourse);
+    console.log("GRUPO: "+store.selectedGroup);
   }
 
+  //TODO
   function moveLeftTask(){
     alert("Moviendo la tarea a la izquierda");
   }
 
+  //TODO
   function moveRightTask(){
     alert("Moviendo la tarea a la izquierda");
   }
 
-  
+  //TODO
   function deleteTask(){
     alert("Eliminando la tarea");
   }
 
-  function unenrollStudentClassroom(){
+  //TODO
+  function unRollStudentClassroom(){
     alert("Quitando estudiante de la clase");
   }
 </script>
@@ -179,8 +238,8 @@
               <div v-if="showColumnMenu && selectedColumn === index" class="column-menu" 
                   :style="{ top: menuColumnY + 'px', left: menuColumnX + 'px' }">
                 <ul>
-                  <li @click="addTaskLeft"><i class="bi bi-plus"></i> Añadir tarea</li>
-                  <li @click="updateNameTask"><i class="bi bi-pencil"></i> Cambiar nombre</li>
+                  <li @click="openModal('addTaskLeft')"><i class="bi bi-plus"></i> Añadir tarea</li>
+                  <li @click="openModal('updateNameTask')"><i class="bi bi-pencil"></i> Cambiar nombre</li>
                   <li @click="moveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
                   <li @click="moveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
                   <li @click="deleteTask"><i class="bi bi-trash"></i>Eliminar</li>
@@ -202,7 +261,7 @@
               <div v-if="showStudentMenu && selectedStudent === rowIndex" class="column-menu" 
                   :style="{ top: menuStudentY + 'px', left: menuStudentX + 'px' }">
                 <ul>
-                  <li @click="unenrollStudentClassroom"><i class="bi bi-trash"></i>Eliminar del aula</li>
+                  <li @click="unRollStudentClassroom"><i class="bi bi-trash"></i>Eliminar del aula</li>
                 </ul>
               </div>
             </td>
@@ -214,6 +273,15 @@
         </tbody>
       </table>
     </div>
+    <!--Dynamic modal to add something name-->
+    <Modal
+      ref="modalRef"
+      :title="modalConfig.title"
+      :placeholder="modalConfig.placeholder"
+      :buttonText="modalConfig.buttonText"
+      @submit="modalConfig.submitHandler"
+      @close="() => {}"
+    />
   </div>
 </template>
 
@@ -231,7 +299,7 @@
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     width: 100%;
-    max-width: 600px;
+    overflow-x: auto;
   }
 
   .table-subtitle {

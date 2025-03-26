@@ -26,6 +26,29 @@ const getCellsForTable = async (nameSubject, nameYear, nameCourse, nameGroup, na
   }
 };
 
+//add task in left of position reference
+const addTaskLeft = async (classCode, nameNewTask, nameReferenceTask,
+  nameSubject, nameYear, nameCourse, nameGroup) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.put(`/addTaskLeft?token=${authStore.token}&classCode=${classCode}&nameNewTask=${nameNewTask}&nameReferenceTask=${nameReferenceTask}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error creando la tarea: ",
+      error.response?.data || error.message
+    );
+  }
+};
+
 export { 
     getCellsForTable,
+    addTaskLeft,
  };
