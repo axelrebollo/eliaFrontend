@@ -159,7 +159,7 @@
     //type add task to right another task
     if (type === "addTask") {
       modalConfig.value = {
-        title: "Agregar tarea a la izquierda",
+        title: "Agregar tarea",
         placeholder: "Nombre de la tarea",
         buttonText: "Agregar Tarea",
         submitHandler: (nameNewTask) => handleAddTask(nameNewTask, selectedColumnName.value)
@@ -283,7 +283,7 @@
             </td>
             <!--insert notes from this student-->
             <td v-for="(note, noteIndex) in row.notes" :key="noteIndex">
-              {{ note }}
+              {{ note !== -1 ? note : '' }}
             </td>
           </tr>
         </tbody>

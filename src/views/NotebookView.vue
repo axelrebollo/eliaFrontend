@@ -26,7 +26,8 @@
 <template>
   <div>
     <!--dynamic load for name and surnames about user-->
-    <h2>Libro de notas de: {{ name }} {{ surname1 }} {{ surname2}}</h2>
+    <h2>Libro de notas</h2>
+    <h3>{{ name }} {{ surname1 }} {{ surname2}}</h3>
     <div class="containerNotebook">
       <MainNavBarNotebook/>
       <Notebook/>
@@ -43,10 +44,17 @@
     background-color: rgb(122, 122, 122);
   }
 
-  h2 {
+  h2{
     text-align: center;
     color: white;
     padding-top: 50px;
+  }
+
+  h3{
+    text-align: center;
+    color: white;
+    padding-top: 0px;
+    margin-bottom: 50px;
   }
 
   .containerNotebook {
