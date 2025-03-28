@@ -232,17 +232,17 @@
   }
 
   //UPDATE NOTE
+  const showMessage = ref(false);
+  const originalNote = ref(""); // Guardamos la nota original
 
   const handleUpdateNote = async (rowIndex, noteIndex, event) => {
     const newNote = event.target.innerText.trim();  //capture new note
     const currentNote = rawData.value[rowIndex].notes[noteIndex];  //actual note after edition
 
-    if(newNote == currentNote) return;
+    if(newNote == currentNote || newNote === '') return;
 
-    //get name student
+    //get name student and task
     const nameStudent = rawData.value[rowIndex].name;
-
-    //get name task
     const nameTask = headers.value[noteIndex];
 
     //check data
@@ -256,6 +256,7 @@
     if (!validNumberRegex.test(newNote)) {
       alert("Por favor, ingrese una nota válida.");
       console.error("Error: La nota ingresada no es un número válido.");
+      event.target.innerText = currentNote;  //restore old note
       return;
     }
 
@@ -267,14 +268,35 @@
         newNote,
       );  
       if(response){
-      //reload table
-      store.selectedTable = store.selectedTable;
-      await loadTableData(store.selectedTable);
-    }
+        //reload table
+        store.selectedTable = store.selectedTable;
+        await loadTableData(store.selectedTable);
+        showMessage.value = true;
+        setTimeout(() => { 
+          showMessage.value = false; 
+        }, 
+        3000);
+      }
     }
     catch(error){
       console.error("Error al actualizar la nota: ", error);
       alert("Hubo un error al actualizar la nota.");
+    }
+  };
+
+  //focus into cell
+  const handleFocus = (event) => {
+    originalNote.value = event.target.innerText.trim(); //save original note
+    event.target.innerText = ""; //delete cell when user click
+  };
+
+
+  const handleBlur = (event, rowIndex, noteIndex) => {
+    const newNote = event.target.innerText.trim();
+    if (newNote === "") {
+      event.target.innerText = originalNote.value; //if not write, restore original note
+    } else {
+      rawData.value[rowIndex].notes[noteIndex] = newNote; //update note into cell
     }
   };
 </script>
@@ -329,14 +351,20 @@
               </div>
             </td>
             <!--insert notes from this student-->
-            <!--blur and keydown.enter save the new note with updateNote-->
-            <td v-for="(note, noteIndex) in row.notes" :key="noteIndex" contenteditable="true" @blur="handleUpdateNote(rowIndex, noteIndex, $event)" 
-            @keydown.enter.prevent="handleUpdateNote(rowIndex, noteIndex, $event)">
+            <td v-for="(note, noteIndex) in row.notes" 
+                :key="noteIndex" 
+                contenteditable="true"
+                @focus="handleFocus($event)"
+                @blur="handleBlur($event, rowIndex, noteIndex)"
+                @keydown.enter.prevent="handleUpdateNote(rowIndex, noteIndex, $event)">
               {{ note !== -1 ? note : '' }}
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
+    <div v-if="showMessage" class="update-message">
+    ¡Nota actualizada!
     </div>
     <!--Dynamic modal to add something name-->
     <Modal
@@ -348,6 +376,7 @@
       @close="() => {}"
     />
   </div>
+
 </template>
 
 <style scoped>
