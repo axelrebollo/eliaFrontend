@@ -1,11 +1,9 @@
 import api from "./notebookApi.js";
-import { useNotebookStore } from "@/stores/notebookStore.js";
 import { useAuthStore } from "@/stores/authStore.js";
 
 //Get table cells for teacher profile
 const getCellsForTable = async (nameSubject, nameYear, nameCourse, nameGroup, nameTable) => {
   const authStore = useAuthStore();
-  const notebookStore = useNotebookStore();
   if (!authStore.token) {
     console.error("No hay token disponible.");
     return [];
@@ -36,7 +34,28 @@ const addTask = async (classCode, nameNewTask, nameReferenceTask,
   }
 
   try{
-    const response = await api.apiCells.put(`/addTask?token=${authStore.token}&classCode=${classCode}&nameNewTask=${nameNewTask}&nameReferenceTask=${nameReferenceTask}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}`,
+    const response = await api.apiCells.post(`/addTask?token=${authStore.token}&classCode=${classCode}&nameNewTask=${nameNewTask}&nameReferenceTask=${nameReferenceTask}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error creando la tarea: ",
+      error.response?.data || error.message
+    );
+  }
+};
+
+//update note into table with student and task
+const updateNote = async (classCode, nameStudent, nameTask, newNote) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.patch(`/updateNote?token=${authStore.token}&classCode=${classCode}&student=${nameStudent}&task=${nameTask}&note=${newNote}`,
       { headers: {Authorization: `Bearer ${authStore.token}`},
     });
     return response.data;
@@ -51,4 +70,5 @@ const addTask = async (classCode, nameNewTask, nameReferenceTask,
 export { 
     getCellsForTable,
     addTask,
+    updateNote,
  };

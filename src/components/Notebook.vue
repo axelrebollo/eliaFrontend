@@ -1,7 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTask } from '@/services/cellService.js';
+  import { getCellsForTable, addTask, updateNote } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
   import { onMounted } from 'vue';
@@ -230,6 +230,53 @@
   function unRollStudentClassroom(){
     alert("Quitando estudiante de la clase");
   }
+
+  //UPDATE NOTE
+
+  const handleUpdateNote = async (rowIndex, noteIndex, event) => {
+    const newNote = event.target.innerText.trim();  //capture new note
+    const currentNote = rawData.value[rowIndex].notes[noteIndex];  //actual note after edition
+
+    if(newNote == currentNote) return;
+
+    //get name student
+    const nameStudent = rawData.value[rowIndex].name;
+
+    //get name task
+    const nameTask = headers.value[noteIndex];
+
+    //check data
+    if (!nameStudent || !nameTask) {
+      console.error("Error: No se encontró el nombre del estudiante o la tarea.");
+      return;
+    }
+
+    //check if new note is a float number
+    const validNumberRegex = /^[+-]?(\d+(\.\d*)?|\.\d+)$/;  //regex to check "number.number"
+    if (!validNumberRegex.test(newNote)) {
+      alert("Por favor, ingrese una nota válida.");
+      console.error("Error: La nota ingresada no es un número válido.");
+      return;
+    }
+
+    try{
+      const response = await updateNote(
+        classCode.value,
+        nameStudent,
+        nameTask,
+        newNote,
+      );  
+      if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
+    }
+    catch(error){
+      console.error("Error al actualizar la nota: ", error);
+      alert("Hubo un error al actualizar la nota.");
+    }
+  };
 </script>
 
 <template>
@@ -282,7 +329,9 @@
               </div>
             </td>
             <!--insert notes from this student-->
-            <td v-for="(note, noteIndex) in row.notes" :key="noteIndex">
+            <!--blur and keydown.enter save the new note with updateNote-->
+            <td v-for="(note, noteIndex) in row.notes" :key="noteIndex" contenteditable="true" @blur="handleUpdateNote(rowIndex, noteIndex, $event)" 
+            @keydown.enter.prevent="handleUpdateNote(rowIndex, noteIndex, $event)">
               {{ note !== -1 ? note : '' }}
             </td>
           </tr>
