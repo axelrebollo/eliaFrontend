@@ -1,7 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTask, updateNote } from '@/services/cellService.js';
+  import { getCellsForTable, addTask, updateNote, deleteTask } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
   import { onMounted } from 'vue';
@@ -211,6 +211,30 @@
     console.log("GRUPO: "+store.selectedGroup);
   }
 
+  const handleDeleteTask = async () => {
+    if(selectedColumn.value === null || classCode.value === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta tarea y todas las notas de la columna?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteTask(classCode.value, selectedColumn.value+1);
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
+  }
+
+  //TODO
+  function unRollStudentClassroom(){
+    alert("Quitando estudiante de la clase");
+  }
+
   //TODO
   function moveLeftTask(){
     alert("Moviendo la tarea a la izquierda");
@@ -221,19 +245,9 @@
     alert("Moviendo la tarea a la izquierda");
   }
 
-  //TODO
-  function deleteTask(){
-    alert("Eliminando la tarea");
-  }
-
-  //TODO
-  function unRollStudentClassroom(){
-    alert("Quitando estudiante de la clase");
-  }
-
   //UPDATE NOTE
   const showMessage = ref(false);
-  const originalNote = ref(""); // Guardamos la nota original
+  const originalNote = ref(""); //save initial note
 
   const handleUpdateNote = async (rowIndex, noteIndex, event) => {
     const newNote = event.target.innerText.trim();  //capture new note
@@ -327,7 +341,7 @@
                   <li @click="openModal('updateNameTask')"><i class="bi bi-pencil"></i> Cambiar nombre</li>
                   <li @click="moveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
                   <li @click="moveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
-                  <li @click="deleteTask"><i class="bi bi-trash"></i>Eliminar</li>
+                  <li @click="handleDeleteTask"><i class="bi bi-trash"></i>Eliminar</li>
                 </ul>
               </div>
             </th>

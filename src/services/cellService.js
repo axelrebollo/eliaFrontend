@@ -67,8 +67,30 @@ const updateNote = async (classCode, nameStudent, nameTask, newNote) => {
   }
 };
 
+//delete column task into table
+const deleteTask = async (classCode, columnIndex) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.delete(`/deleteTaskColumn?token=${authStore.token}&classCode=${classCode}&positionTaskColumn=${columnIndex}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error borrando la columna de la tarea: ",
+      error.response?.data || error.message
+    );
+  }
+};
+
 export { 
     getCellsForTable,
     addTask,
     updateNote,
+    deleteTask,
  };
