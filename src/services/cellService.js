@@ -43,6 +43,7 @@ const addTask = async (classCode, nameNewTask, nameReferenceTask,
     console.error("Error creando la tarea: ",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al añadir la tabla: "+error.response.data.mensaje);
   }
 };
 
@@ -64,6 +65,7 @@ const updateNote = async (classCode, nameStudent, nameTask, newNote) => {
     console.error("Error creando la tarea: ",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al añadir la nota: "+error.response.data.mensaje);
   }
 };
 
