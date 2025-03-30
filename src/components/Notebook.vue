@@ -1,7 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTask, updateNote, deleteTask } from '@/services/cellService.js';
+  import { getCellsForTable, addTask, updateNote, deleteTask, deleteStudent } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
   import { onMounted } from 'vue';
@@ -230,9 +230,24 @@
     }
   }
 
-  //TODO
-  function unRollStudentClassroom(){
-    alert("Quitando estudiante de la clase");
+  const handleDeleteStudent = async () => {
+    if(selectedStudent.value === null || classCode.value === ''){
+      return;
+    }
+    const studentName = rawData.value[selectedStudent.value].name;
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas quitar el estudiante del aula y eliminar todas las notas de la fila?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteStudent(classCode.value, studentName);
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
   }
 
   //TODO
@@ -360,7 +375,7 @@
               <div v-if="showStudentMenu && selectedStudent === rowIndex" class="column-menu" 
                   :style="{ top: menuStudentY + 'px', left: menuStudentX + 'px' }">
                 <ul>
-                  <li @click="unRollStudentClassroom"><i class="bi bi-trash"></i>Eliminar del aula</li>
+                  <li @click="handleDeleteStudent"><i class="bi bi-trash"></i>Eliminar del aula</li>
                 </ul>
               </div>
             </td>

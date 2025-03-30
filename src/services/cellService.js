@@ -90,9 +90,32 @@ const deleteTask = async (classCode, columnIndex) => {
   }
 };
 
+//delete column task into table
+const deleteStudent = async (classCode, nameStudent) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.delete(`/deleteStudentTable?token=${authStore.token}&classCode=${classCode}&nameStudent=${nameStudent}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error borrando la columna de la tarea: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un problema eliminar el estudiante del aula: "+error.response.data.mensaje);
+  }
+};
+
 export { 
     getCellsForTable,
     addTask,
     updateNote,
     deleteTask,
+    deleteStudent
  };
