@@ -19,12 +19,17 @@
   
   //is executed always that change selectedTable
   watch(() => store.selectedTable, (newSelectionTable) => {
-    if (newSelectionTable) {
-      //load classCode
-      loadClassCode(newSelectionTable);
-      //load table
-      loadTableData(newSelectionTable);
+    if(!newSelectionTable){
+      //if table not selected, clean table in view
+      headers.value = [];
+      rawData.value = [];
+      classCode.value = "";
+      return;
     }
+    //load classCode
+    loadClassCode(newSelectionTable);
+    //load table
+    loadTableData(newSelectionTable);
   });
 
   //save the table status if change component 
@@ -48,6 +53,7 @@
       }));
       const filteredData = clases.value.filter(clase => clase.pagina === newSelectionTable);
       classCode.value = filteredData[0].codigo;
+      store.setClassCode(classCode.value);
     }
     catch(error){
       console.log("Error al cargar la tabla: ", error);
@@ -405,7 +411,6 @@
       @close="() => {}"
     />
   </div>
-
 </template>
 
 <style scoped>

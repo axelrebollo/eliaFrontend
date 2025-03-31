@@ -8,6 +8,7 @@ export const useNotebookStore = defineStore('notebook', {
     selectedCourse: null,
     selectedGroup: null,
     selectedTable: null,
+    classCode: null,
   }),
   actions: {
     loadTable(subject, year, course, group, table) {
@@ -18,5 +19,8 @@ export const useNotebookStore = defineStore('notebook', {
       this.selectedTable = table,
       this.tableLoaded = true;
     },
+    setClassCode(code){
+      this.classCode = code;
+    }
   },
 });

@@ -4,7 +4,7 @@
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse } from "@/services/courseService.js";
   import { getGroups, addGroup } from "@/services/groupService.js";
-  import { getTables, addTable } from "@/services/tableService.js";
+  import { getTables, addTable, deleteTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
   import { useNotebookStore } from '@/stores/notebookStore';
 
@@ -76,7 +76,8 @@
 
   const loadTableComponent = () => {
     if (!selectedGroup.value || !selectedTable.value) {
-      alert("Debe seleccionar una tabla.");
+      //if table is deleted, clean table for view
+      store.loadTable(null,null,null,null,null);
       return;
     }
     if(selectedSubject.value && selectedYear.value && selectedCourse.value && selectedGroup.value && selectedTable.value){
@@ -217,6 +218,26 @@
       }
     }
   }
+
+  const handleDeleteTable = async () => {
+    if(store.classCode === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar la tabla y todos sus elementos?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteTable(store.classCode);
+    if(response){
+      //reload dropdown
+      await getTablesForDropdown();
+      //clean table
+      loadTableComponent();
+    }
+  }
 </script>
 
 <template>
@@ -294,7 +315,7 @@
           <button class="btn btn-success" @click="openModal('table')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="deleteTable">
+          <button class="btn btn-danger" @click="handleDeleteTable()">
             <i class="bi bi-trash"></i>
           </button>
         </div>

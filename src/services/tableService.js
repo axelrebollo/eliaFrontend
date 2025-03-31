@@ -1,4 +1,3 @@
-import { Alert } from "bootstrap/dist/js/bootstrap.bundle.min.js";
 import api from "./notebookApi.js"
 import { useAuthStore } from "@/stores/authStore.js";
 
@@ -46,7 +45,30 @@ const addTable = async (nameSubject, nameYear, nameCourse, nameGroup, nameTable)
   }
 };
 
+//delete table and all cells into table
+const deleteTable = async (classCode) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiTables.delete(`/deleteTable?token=${authStore.token}&classCode=${classCode}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error borrando la columna de la tarea: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un problema eliminar la tabla: "+error.response.data.mensaje);
+  }
+};
+
 export{
     getTables,
     addTable,
+    deleteTable,
 }
