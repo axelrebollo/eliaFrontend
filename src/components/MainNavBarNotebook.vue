@@ -3,7 +3,7 @@
   import { getYears, addYear } from "@/services/yearService.js";
   import { getSubjects, addSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse } from "@/services/courseService.js";
-  import { getGroups, addGroup } from "@/services/groupService.js";
+  import { getGroups, addGroup, deleteGroup } from "@/services/groupService.js";
   import { getTables, addTable, deleteTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
   import { useNotebookStore } from '@/stores/notebookStore';
@@ -219,6 +219,7 @@
     }
   }
 
+  //delete table
   const handleDeleteTable = async () => {
     if(store.classCode === ''){
       return;
@@ -234,6 +235,27 @@
     if(response){
       //reload dropdown
       await getTablesForDropdown();
+      //clean table
+      loadTableComponent();
+    }
+  }
+
+  //delete group
+  const handleDeleteGroup = async () => {
+    if(store.classCode === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar el grupo y todos sus elementos?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteGroup(selectedCourse.value, selectedSubject.value, selectedYear.value, selectedGroup.value);
+    if(response){
+      //reload dropdown
+      await getGroupsForDropdown();
       //clean table
       loadTableComponent();
     }
@@ -300,7 +322,7 @@
           <button class="btn btn-success" @click="openModal('group')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="deleteGroup">
+          <button class="btn btn-danger" @click="handleDeleteGroup">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -315,7 +337,7 @@
           <button class="btn btn-success" @click="openModal('table')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="handleDeleteTable()">
+          <button class="btn btn-danger" @click="handleDeleteTable">
             <i class="bi bi-trash"></i>
           </button>
         </div>

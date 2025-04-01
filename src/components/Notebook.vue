@@ -17,7 +17,7 @@
   const modalRef = ref(null);
   const modalConfig = ref({});
   
-  //is executed always that change selectedTable
+  //is executed always that exist some change in selectedTable
   watch(() => store.selectedTable, (newSelectionTable) => {
     if(!newSelectionTable){
       //if table not selected, clean table in view

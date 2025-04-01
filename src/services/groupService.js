@@ -45,7 +45,30 @@ const addGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
   }
 };
 
+//delete group and tables
+const deleteGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiGroups.delete(`/deleteGroup?token=${authStore.token}&nameCourse=${nameCourse}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameGroup=${nameGroup}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error borrando la columna de la tarea: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un problema eliminar la tabla: "+error.response.data.mensaje);
+  }
+};
+
 export{
     getGroups,
     addGroup,
+    deleteGroup,
 }
