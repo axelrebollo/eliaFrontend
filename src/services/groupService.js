@@ -60,10 +60,10 @@ const deleteGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
     return response.data;
   }
   catch(error){
-    console.error("Error borrando la columna de la tarea: ",
+    console.error("Error borrando el grupo: ",
       error.response?.data || error.message
     );
-    alert("Ha ocurrido un problema eliminar la tabla: "+error.response.data.mensaje);
+    alert("Ha ocurrido un problema al eliminar el grupo: "+error.response.data.mensaje);
   }
 };
 

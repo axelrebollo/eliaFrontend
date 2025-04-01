@@ -1,8 +1,8 @@
 <script setup>
-  import { ref, onMounted } from "vue";
-  import { getYears, addYear } from "@/services/yearService.js";
-  import { getSubjects, addSubject } from "@/services/subjectService.js";
-  import { getCourses, addCourse } from "@/services/courseService.js";
+  import { ref, onMounted, nextTick } from "vue";
+  import { getYears, addYear, deleteYear } from "@/services/yearService.js";
+  import { getSubjects, addSubject, deleteSubject } from "@/services/subjectService.js";
+  import { getCourses, addCourse, deleteCourse } from "@/services/courseService.js";
   import { getGroups, addGroup, deleteGroup } from "@/services/groupService.js";
   import { getTables, addTable, deleteTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
@@ -25,6 +25,8 @@
   //modal variables
   const modalRef = ref(null);
   const modalConfig = ref({});
+
+  const store = useNotebookStore();
   
   //load dropdown years
   const getYearsForDropdown = async () => {
@@ -72,8 +74,7 @@
     selectedTable.value = null; //clean table
   }
 
-  const store = useNotebookStore();
-
+  //load table component
   const loadTableComponent = () => {
     if (!selectedGroup.value || !selectedTable.value) {
       //if table is deleted, clean table for view
@@ -140,6 +141,8 @@
     } 
     modalRef.value.openModal();
   };
+
+  //ADD SECTION
   
   //add year
   const handleAddYear = async (yearName) => {
@@ -219,6 +222,8 @@
     }
   }
 
+  //DELETES SECTION
+
   //delete table
   const handleDeleteTable = async () => {
     if(store.classCode === ''){
@@ -242,10 +247,10 @@
 
   //delete group
   const handleDeleteGroup = async () => {
-    if(store.classCode === ''){
+    if(selectedCourse.value === '' || selectedSubject.value === '' || selectedYear.value === '' || selectedGroup.value === ''){
       return;
     }
-
+    
     //alert to confirm
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar el grupo y todos sus elementos?");
     if (!confirmDelete) {
@@ -256,6 +261,90 @@
     if(response){
       //reload dropdown
       await getGroupsForDropdown();
+      await getTablesForDropdown();
+      //clean table
+      loadTableComponent();
+    }
+  }
+
+  //delete course
+  const handleDeleteCourse = async () => {
+    if(selectedCourse.value === '' || selectedYear.value === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar el curso y todos sus elementos?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteCourse(selectedCourse.value, selectedYear.value);
+    if(response){
+      selectedCourse.value = null;
+      selectedGroup.value = null;
+      selectedTable.value = null;
+      await nextTick(); //wait to update values after to execute function
+      //reload dropdown
+      await getCoursesForDropdown();
+      await getGroupsForDropdown();
+      await getTablesForDropdown();
+      //clean table
+      loadTableComponent();
+    }
+  }
+
+  //delete year
+  const handleDeleteYear = async () => {
+    if(selectedYear.value === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar el año y todos sus elementos?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteYear(selectedYear.value);
+    if(response){
+      selectedYear.value = null;
+      selectedCourse.value = null;
+      selectedGroup.value = null;
+      selectedTable.value = null;
+      await nextTick(); //wait to update values after to execute function
+      //reload dropdown
+      await getYearsForDropdown();
+      await getCoursesForDropdown();
+      await getGroupsForDropdown();
+      await getTablesForDropdown();
+      //clean table
+      loadTableComponent();
+    }
+  }
+
+  //delete subject
+  const handleDeleteSubject = async () => {
+    if(selectedYear.value === ''){
+      return;
+    }
+
+    //alert to confirm
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar la asignatura y todos sus elementos?");
+    if (!confirmDelete) {
+      return;
+    }
+
+    const response = await deleteSubject(selectedSubject.value);
+    if(response){
+      selectedSubject.value = null;
+      selectedGroup.value = null;
+      selectedTable.value = null;
+      await nextTick(); //wait to update values after to execute function
+      //reload dropdown
+      await getSubjectsForDropdown();
+      await getGroupsForDropdown();
+      await getTablesForDropdown();
       //clean table
       loadTableComponent();
     }
@@ -275,7 +364,7 @@
           <button class="btn btn-success" @click="openModal('subject')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="deleteSubject">
+          <button class="btn btn-danger" @click="handleDeleteSubject">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -291,7 +380,7 @@
           <button class="btn btn-success" @click="openModal('year')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="deleteYear">
+          <button class="btn btn-danger" @click="handleDeleteYear">
             <i class="bi bi-trash"></i>
           </button>
         </div>
@@ -307,7 +396,7 @@
           <button class="btn btn-success" @click="openModal('course')">
             <i class="bi bi-plus"></i>
           </button>
-          <button class="btn btn-danger" @click="deleteCourse">
+          <button class="btn btn-danger" @click="handleDeleteCourse">
             <i class="bi bi-trash"></i>
           </button>
         </div>

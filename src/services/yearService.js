@@ -45,7 +45,30 @@ const addYear = async (nameYear) => {
   }
 };
 
+//delete year and tables
+const deleteYear = async (nameYear) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiYears.delete(`/deleteYear?token=${authStore.token}&nameYear=${nameYear}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error borrando el año: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un problema al eliminar el año: "+error.response.data.mensaje);
+  }
+};
+
 export { 
   getYears,
-  addYear
+  addYear,
+  deleteYear,
  };
