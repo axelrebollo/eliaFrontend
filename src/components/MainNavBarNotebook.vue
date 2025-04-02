@@ -2,7 +2,7 @@
   import { ref, onMounted, nextTick } from "vue";
   import { getYears, addYear, deleteYear, updateNameYear } from "@/services/yearService.js";
   import { getSubjects, addSubject, deleteSubject, updateNameSubject } from "@/services/subjectService.js";
-  import { getCourses, addCourse, deleteCourse } from "@/services/courseService.js";
+  import { getCourses, addCourse, deleteCourse, updateNameCourse } from "@/services/courseService.js";
   import { getGroups, addGroup, deleteGroup } from "@/services/groupService.js";
   import { getTables, addTable, deleteTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
@@ -447,10 +447,21 @@
   }
 
   const handleUpdateNameCourse = async (courseName) => {
-    if (courseName.trim() !== "") {
-      console.log("ACTUALIZANDO ...CURSO: "+courseName);
-      console.log("El curso seleccionado es: "+ selectedCourse.value);
-      console.log("El año seleccionado es: "+ selectedYear.value);
+    if(courseName === '' || selectedCourse.value === '' || selectedYear.value === ''){
+      console.log("Falta por seleccionar algún parametro.");
+      alert("Debe seleccionar un año y un curso o insertar un nuevo nombre.");
+      return;
+    }
+
+    courseName = courseName.trim();
+
+    if (courseName !== "") {
+      //update name course
+      const response = await updateNameCourse(selectedYear.value, selectedCourse.value, courseName);
+      if (response) {
+        //reload dropdown
+        await getCoursesForDropdown();
+      }
     }
   }
 

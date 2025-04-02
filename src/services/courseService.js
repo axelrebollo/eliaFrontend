@@ -67,8 +67,31 @@ const deleteCourse = async (nameCourse, nameYear) => {
   }
 };
 
+//update name course
+const updateNameCourse = async (nameYear, nameCourse, newNameCourse) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCourses.patch(`/updateNameCourse?token=${authStore.token}&nameCourse=${nameCourse}&nameYear=${nameYear}&newNameCourse=${newNameCourse}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error actualizando el curso: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al actualizar el curso: "+error.response.data.mensaje);
+  }
+};
+
 export{
     getCourses,
     addCourse,
     deleteCourse,
+    updateNameCourse,
 }
