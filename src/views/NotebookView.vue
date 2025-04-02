@@ -60,7 +60,7 @@
   .containerNotebook {
     display: flex;
     flex-direction: row;
-    gap: 100px;
+    gap: 150px;
     margin-left: 50px;
   }
 </style>

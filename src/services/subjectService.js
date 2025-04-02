@@ -66,8 +66,31 @@ const deleteSubject = async (nameSubject) => {
   }
 };
 
+//update name subject
+const updateNameSubject = async (nameSubject, newNameSubject) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiSubjects.patch(`/updateNameSubject?token=${authStore.token}&nameSubject=${nameSubject}&newNameSubject=${newNameSubject}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error actualizando la asignatura: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al actualizar la asignatura: "+error.response.data.mensaje);
+  }
+};
+
 export { 
   getSubjects,
   addSubject,
   deleteSubject,
+  updateNameSubject,
  };

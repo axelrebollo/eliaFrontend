@@ -1,7 +1,7 @@
 <script setup>
   import { ref, onMounted, nextTick } from "vue";
-  import { getYears, addYear, deleteYear } from "@/services/yearService.js";
-  import { getSubjects, addSubject, deleteSubject } from "@/services/subjectService.js";
+  import { getYears, addYear, deleteYear, updateNameYear } from "@/services/yearService.js";
+  import { getSubjects, addSubject, deleteSubject, updateNameSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse, deleteCourse } from "@/services/courseService.js";
   import { getGroups, addGroup, deleteGroup } from "@/services/groupService.js";
   import { getTables, addTable, deleteTable } from "@/services/tableService.js";
@@ -26,8 +26,11 @@
   const modalRef = ref(null);
   const modalConfig = ref({});
 
+  //stores
   const store = useNotebookStore();
   
+  //LOAD DROPDOWNS AREA
+
   //load dropdown years
   const getYearsForDropdown = async () => {
     years.value = await getYears();
@@ -92,8 +95,13 @@
     await getSubjectsForDropdown();
   });
 
+  //DYNAMIC MODAL AREA
+
   //open dynamic modal
   const openModal = (type) => {
+    
+    //ADD MODALS
+    
     //type add year
     if (type === "year") {
       modalConfig.value = {
@@ -137,6 +145,54 @@
         placeholder: "Nombre de la página",
         buttonText: "Agregar página",
         submitHandler: handleAddTable
+      };
+    } 
+
+    //UPDATE MODALS
+
+    //type update name year
+    if (type === "updateNameYear") {
+      modalConfig.value = {
+        title: "Ingresar el nuevo nombre del Año",
+        placeholder: "Nombre del Año",
+        buttonText: "Actualizar Año",
+        submitHandler: handleUpdateNameYear
+      };
+    } 
+    //type update name subject
+    else if (type === "updateNameSubject") {
+      modalConfig.value = {
+        title: "Ingresar el nuevo nombre de la Asignatura",
+        placeholder: "Nombre de la Asignatura",
+        buttonText: "Actualizar Asignatura",
+        submitHandler: handleUpdateNameSubject
+      };
+    } 
+    //type update name course
+    else if (type === "updateNameCourse") {
+      modalConfig.value = {
+        title: "Ingresar el nuevo nombre del Curso",
+        placeholder: "Nombre del Curso",
+        buttonText: "Actualizar Curso",
+        submitHandler: handleUpdateNameCourse
+      };
+    }
+    //type update name group
+    else if (type === "updateNameGroup") {
+      modalConfig.value = {
+        title: "Ingresar el nuevo nombre del Grupo",
+        placeholder: "Nombre del Grupo",
+        buttonText: "Actualizar Grupo",
+        submitHandler: handleUpdateNameGroup
+      };
+    } 
+    //type update name table
+    else if (type === "updateNameTable") {
+      modalConfig.value = {
+        title: "Ingresar el nuevo nombre de la página(tabla)",
+        placeholder: "Nombre de la página",
+        buttonText: "Actualizar página",
+        submitHandler: handleUpdateNameTable
       };
     } 
     modalRef.value.openModal();
@@ -349,6 +405,75 @@
       loadTableComponent();
     }
   }
+
+  //UPDATE SECCION AREA
+  
+  const handleUpdateNameYear = async (yearName) => {
+    if(yearName === '' || selectedYear.value === ''){
+      console.log("Falta por seleccionar algún parametro.");
+      alert("Debe seleccionar un año o insertar un nuevo nombre.");
+      return;
+    }
+
+    yearName = yearName.trim();
+
+    if (yearName !== "") {
+      //update name year
+      const response = await updateNameYear(selectedYear.value, yearName);
+      if (response) {
+        //reload dropdown
+        await getYearsForDropdown();
+      }
+    }
+  }
+
+  const handleUpdateNameSubject = async (subjectName) => {
+    if(subjectName === '' || selectedSubject.value === ''){
+      console.log("Falta por seleccionar algún parametro.");
+      alert("Debe seleccionar una asignatura o insertar un nuevo nombre.");
+      return;
+    }
+
+    subjectName = subjectName.trim();
+
+    if (subjectName !== "") {
+      //update name subject
+      const response = await updateNameSubject(selectedSubject.value, subjectName);
+      if (response) {
+        //reload dropdown
+        await getSubjectsForDropdown();
+      }
+    }
+  }
+
+  const handleUpdateNameCourse = async (courseName) => {
+    if (courseName.trim() !== "") {
+      console.log("ACTUALIZANDO ...CURSO: "+courseName);
+      console.log("El curso seleccionado es: "+ selectedCourse.value);
+      console.log("El año seleccionado es: "+ selectedYear.value);
+    }
+  }
+
+  const handleUpdateNameGroup = async (groupName) => {
+    if (groupName.trim() !== "") {
+      console.log("ACTUALIZANDO ...GRUPO: "+groupName);
+      console.log("El grupo seleccionado es: "+ selectedGroup.value);
+      console.log("El curso seleccionado es: "+ selectedCourse.value);
+      console.log("El año seleccionado es: "+ selectedYear.value);
+      console.log("La asignatura seleccionada es: "+ selectedSubject.value);
+    }
+  }
+
+  const handleUpdateNameTable = async (tableName) => {
+    if (tableName.trim() !== "") {
+      console.log("ACTUALIZANDO ...TABLA: "+tableName);
+      console.log("La tabla seleccionada es: "+ selectedTable.value);
+      console.log("El grupo seleccionado es: "+ selectedGroup.value);
+      console.log("El curso seleccionado es: "+ selectedCourse.value);
+      console.log("El año seleccionado es: "+ selectedYear.value);
+      console.log("La asignatura seleccionada es: "+ selectedSubject.value);
+    }
+  }
 </script>
 
 <template>
@@ -361,6 +486,9 @@
           <select id="dropdown4" class="form-control" v-model="selectedSubject" @change="getGroupsForDropdown">
             <option v-for="subject in subjects" :key="subject">{{ subject }}</option>
           </select>
+          <button class="btn btn-primary" @click="openModal('updateNameSubject')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button class="btn btn-success" @click="openModal('subject')">
             <i class="bi bi-plus"></i>
           </button>
@@ -377,6 +505,9 @@
           <select id="dropdownYear" class="form-control" v-model="selectedYear" @change="getCoursesForDropdown">
             <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
           </select>
+          <button class="btn btn-primary" @click="openModal('updateNameYear')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button class="btn btn-success" @click="openModal('year')">
             <i class="bi bi-plus"></i>
           </button>
@@ -393,6 +524,9 @@
           <select id="dropdownCourse" class="form-control" v-model="selectedCourse" @change="getGroupsForDropdown">
             <option v-for="course in courses" :key="course">{{ course }}</option>
           </select>
+          <button class="btn btn-primary" @click="openModal('updateNameCourse')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button class="btn btn-success" @click="openModal('course')">
             <i class="bi bi-plus"></i>
           </button>
@@ -408,6 +542,9 @@
           <select id="dropdownGroup" class="form-control" v-model="selectedGroup" @change="getTablesForDropdown">
             <option v-for="group in groups" :key="group">{{ group }}</option>
           </select>
+          <button class="btn btn-primary" @click="openModal('updateNameGroup')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button class="btn btn-success" @click="openModal('group')">
             <i class="bi bi-plus"></i>
           </button>
@@ -423,6 +560,9 @@
           <select id="dropdownTable" class="form-control" v-model="selectedTable" @change="loadTableComponent">
             <option v-for="table in tables" :key="table">{{ table }}</option>
           </select>
+          <button class="btn btn-primary" @click="openModal('updateNameTable')">
+            <i class="bi bi-pencil-square"></i>
+          </button>
           <button class="btn btn-success" @click="openModal('table')">
             <i class="bi bi-plus"></i>
           </button>
