@@ -67,8 +67,31 @@ const deleteTable = async (classCode) => {
   }
 };
 
+//update name group
+const updateNameTable = async (nameSubject, nameYear, nameCourse, nameGroup, nameTable, newNameTable) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiTables.patch(`/updateNameTable?token=${authStore.token}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}&nameTable=${nameTable}&newNameTable=${newNameTable}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error actualizando la tabla: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al actualizar la tabla: "+error.response.data.mensaje);
+  }
+};
+
 export{
     getTables,
     addTable,
     deleteTable,
+    updateNameTable,
 }

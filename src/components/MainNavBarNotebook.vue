@@ -3,8 +3,8 @@
   import { getYears, addYear, deleteYear, updateNameYear } from "@/services/yearService.js";
   import { getSubjects, addSubject, deleteSubject, updateNameSubject } from "@/services/subjectService.js";
   import { getCourses, addCourse, deleteCourse, updateNameCourse } from "@/services/courseService.js";
-  import { getGroups, addGroup, deleteGroup } from "@/services/groupService.js";
-  import { getTables, addTable, deleteTable } from "@/services/tableService.js";
+  import { getGroups, addGroup, deleteGroup, updateNameGroup } from "@/services/groupService.js";
+  import { getTables, addTable, deleteTable, updateNameTable } from "@/services/tableService.js";
   import Modal from "@/components/ModalName.vue";
   import { useNotebookStore } from '@/stores/notebookStore';
 
@@ -466,23 +466,40 @@
   }
 
   const handleUpdateNameGroup = async (groupName) => {
-    if (groupName.trim() !== "") {
-      console.log("ACTUALIZANDO ...GRUPO: "+groupName);
-      console.log("El grupo seleccionado es: "+ selectedGroup.value);
-      console.log("El curso seleccionado es: "+ selectedCourse.value);
-      console.log("El año seleccionado es: "+ selectedYear.value);
-      console.log("La asignatura seleccionada es: "+ selectedSubject.value);
+    if(groupName === '' || selectedGroup.value === '' || selectedCourse.value === '' || selectedYear.value === '' || selectedSubject.value === ''){
+      console.log("Falta por seleccionar algún parametro.");
+      alert("Debe seleccionar un año, una asignatura, un curso y un grupo o insertar un nuevo nombre.");
+      return;
+    }
+
+    groupName = groupName.trim();
+
+    if (groupName !== "") {
+      //update name group
+      const response = await updateNameGroup(selectedSubject.value, selectedYear.value, selectedCourse.value, selectedGroup.value, groupName);
+      if (response) {
+        //reload dropdown
+        await getGroupsForDropdown();
+      }
     }
   }
 
   const handleUpdateNameTable = async (tableName) => {
-    if (tableName.trim() !== "") {
-      console.log("ACTUALIZANDO ...TABLA: "+tableName);
-      console.log("La tabla seleccionada es: "+ selectedTable.value);
-      console.log("El grupo seleccionado es: "+ selectedGroup.value);
-      console.log("El curso seleccionado es: "+ selectedCourse.value);
-      console.log("El año seleccionado es: "+ selectedYear.value);
-      console.log("La asignatura seleccionada es: "+ selectedSubject.value);
+    if(tableName === '' || selectedGroup.value === '' || selectedGroup.value === '' || selectedCourse.value === '' || selectedYear.value === '' || selectedSubject.value === ''){
+      console.log("Falta por seleccionar algún parametro.");
+      alert("Debe seleccionar un año, una asignatura, un curso, un grupo y una tabla o insertar un nuevo nombre.");
+      return;
+    }
+
+    tableName = tableName.trim();
+
+    if (tableName !== "") {
+      //update name table
+      const response = await updateNameTable(selectedSubject.value, selectedYear.value, selectedCourse.value, selectedGroup.value, selectedTable.value, tableName);
+      if (response) {
+        //reload dropdown
+        await getTablesForDropdown();
+      }
     }
   }
 </script>

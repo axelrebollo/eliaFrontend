@@ -67,8 +67,31 @@ const deleteGroup = async (nameCourse, nameSubject, nameYear, nameGroup) => {
   }
 };
 
+//update name group
+const updateNameGroup = async (nameSubject, nameYear, nameCourse, nameGroup, newNameGroup) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiGroups.patch(`/updateNameGroup?token=${authStore.token}&nameSubject=${nameSubject}&nameYear=${nameYear}&nameCourse=${nameCourse}&nameGroup=${nameGroup}&newNameGroup=${newNameGroup}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error actualizando el grupo: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al actualizar el grupo: "+error.response.data.mensaje);
+  }
+};
+
 export{
     getGroups,
     addGroup,
     deleteGroup,
+    updateNameGroup,
 }
