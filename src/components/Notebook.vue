@@ -1,7 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTask, updateNote, deleteTask, deleteStudent } from '@/services/cellService.js';
+  import { getCellsForTable, addTask, updateNote, deleteTask, deleteStudent, updateNameTask } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
   import { onMounted } from 'vue';
@@ -173,11 +173,12 @@
     } 
     //type update name task
     else if (type === "updateNameTask") {
+      const columnIndex = selectedColumn.value;   //is needed save actual status because is reactive variable and change value to null
       modalConfig.value = {
         title: "Cambiar el nombre de la tarea",
         placeholder: "Nuevo nombre de la tarea",
         buttonText: "Actualizar nombre",
-        submitHandler: (newTaskName) => handleUpdateNameTask(newTaskName, selectedColumnName.value)
+        submitHandler: (newTaskName) => handleUpdateNameTask(newTaskName, columnIndex)
       };
     } 
     modalRef.value.openModal();
@@ -204,17 +205,18 @@
   }
   
   //call to backend update name task selected
-  function handleUpdateNameTask(newTaskName, nameReferenceTask) {
-    alert("Actualizando nombre de la tarea");
-
-    //Datos que necesito
-    console.log("CODIGO CLASE: "+classCode.value);
-    console.log("NUEVO NOMBRE DE LA COLUMNA/TAREA: "+newTaskName);
-    console.log("NOMBRE DE LA TAREA DE REFERENCIA: "+nameReferenceTask);
-    console.log("ASIGNATURA: "+store.selectedSubject);
-    console.log("AÑO: "+store.selectedYear);
-    console.log("CURSO: "+store.selectedCourse);
-    console.log("GRUPO: "+store.selectedGroup);
+  const handleUpdateNameTask = async (newTaskName, columnIndex) => {
+    if(newTaskName === '' || columnIndex === null || columnIndex < 0){
+      alert("Error seleccionando los datos");
+      return;
+    }
+    
+    const response = await updateNameTask(classCode.value, columnIndex+1, newTaskName);
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
   }
 
   const handleDeleteTask = async () => {
@@ -256,13 +258,11 @@
     }
   }
 
-  //TODO
-  function moveLeftTask(){
+  function handleMoveLeftTask(){
     alert("Moviendo la tarea a la izquierda");
   }
 
-  //TODO
-  function moveRightTask(){
+  function handleMoveRightTask(){
     alert("Moviendo la tarea a la izquierda");
   }
 
@@ -360,8 +360,8 @@
                 <ul>
                   <li @click="openModal('addTask')"><i class="bi bi-plus"></i> Añadir tarea</li>
                   <li @click="openModal('updateNameTask')"><i class="bi bi-pencil"></i> Cambiar nombre</li>
-                  <li @click="moveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
-                  <li @click="moveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
+                  <li @click="handleMoveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
+                  <li @click="handleMoveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
                   <li @click="handleDeleteTask"><i class="bi bi-trash"></i>Eliminar</li>
                 </ul>
               </div>

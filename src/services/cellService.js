@@ -112,10 +112,33 @@ const deleteStudent = async (classCode, nameStudent) => {
   }
 };
 
+//update name task
+const updateNameTask = async (classCode, columnIndex, newTaskName) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.patch(`/updateNameTask?token=${authStore.token}&classCode=${classCode}&positionTaskColumn=${columnIndex}&nameNewTask=${newTaskName}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error actualizando el nombre de la tarea: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al actualizar el nombre de la tarea: "+error.response.data.mensaje);
+  }
+};
+
 export { 
     getCellsForTable,
     addTask,
     updateNote,
     deleteTask,
-    deleteStudent
+    deleteStudent,
+    updateNameTask,
  };
