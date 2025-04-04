@@ -2,7 +2,7 @@ import axios from "axios";
 
 //Axios requests years
 const apiYears = axios.create({
-  baseURL: "http://localhost:18091/years",
+  baseURL: "http://localhost:18091/years",    //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -10,7 +10,7 @@ const apiYears = axios.create({
 
 //Axios requests subjects
 const apiSubjects = axios.create({
-  baseURL: "http://localhost:18091/subjects",
+  baseURL: "http://localhost:18091/subjects",   //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,7 +18,7 @@ const apiSubjects = axios.create({
 
 //Axios requests courses
 const apiCourses = axios.create({
-  baseURL: "http://localhost:18091/courses",
+  baseURL: "http://localhost:18091/courses",    //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -26,7 +26,7 @@ const apiCourses = axios.create({
 
 //Axios requests groups
 const apiGroups = axios.create({
-  baseURL: "http://localhost:18091/groups",
+  baseURL: "http://localhost:18091/groups",   //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -34,7 +34,7 @@ const apiGroups = axios.create({
 
 //Axios requests tables
 const apiTables = axios.create({
-  baseURL: "http://localhost:18091/tables",
+  baseURL: "http://localhost:18091/tables",   //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -42,7 +42,7 @@ const apiTables = axios.create({
 
 //Axios requests classroomsProfile
 const apiClassroomProfile = axios.create({
-  baseURL: "http://localhost:18091/classroomProfile",
+  baseURL: "http://localhost:18091/classroomProfile",   //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -50,7 +50,7 @@ const apiClassroomProfile = axios.create({
 
 //Axios requests classroomsProfile
 const apiCells = axios.create({
-  baseURL: "http://localhost:18091/cells",
+  baseURL: "http://localhost:18091/cells",    //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },

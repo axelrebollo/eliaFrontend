@@ -1,0 +1,26 @@
+#Compilation
+FROM node:18 AS build
+
+WORKDIR /app
+
+#Copy files from project
+COPY package*.json ./
+COPY . .
+
+#Install dependencies and compile
+RUN npm install && npm run build
+
+#Use http-server to serve static files
+FROM node:18-alpine
+
+#install http-server
+RUN npm install -g http-server
+
+#Copy files generated from Vite
+COPY --from=build /app/dist /app/dist
+
+#Expose port
+EXPOSE 3000
+
+#Execute http-server to seve app in producción
+CMD ["http-server", "/app/dist", "-p", "3000"]

@@ -2,7 +2,7 @@ import axios from "axios";
 
 //Axios requests users
 const apiClient = axios.create({
-  baseURL: "http://localhost:18090/users",
+  baseURL: "http://localhost:18090/users",  //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 
 //Axios request profiles
 const apiProfile = axios.create({
-  baseURL: "http://localhost:18090/profiles",
+  baseURL: "http://localhost:18090/profiles", //to change for url to backend in production
   headers: {
     "Content-Type": "application/json",
   },
