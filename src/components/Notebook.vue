@@ -1,7 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue';
   import { useNotebookStore } from '@/stores/notebookStore';
-  import { getCellsForTable, addTask, updateNote, deleteTask, deleteStudent, updateNameTask } from '@/services/cellService.js';
+  import { getCellsForTable, addTask, updateNote, deleteTask, deleteStudent, updateNameTask, moveLeftColumn, moveRightColumn } from '@/services/cellService.js';
   import { getTableProfile } from "@/services/classroomProfileService.js";
   import Modal from "@/components/ModalName.vue";
   import { onMounted } from 'vue';
@@ -258,12 +258,30 @@
     }
   }
 
-  function handleMoveLeftTask(){
-    alert("Moviendo la tarea a la izquierda");
+  const handleMoveLeftTask = async () => {
+    if(classCode.value === '' || selectedColumn.value+1 <= 0){
+      return;
+    }
+    const columnIndex = selectedColumn.value+1;
+    const response = await moveLeftColumn(classCode.value, columnIndex);
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
   }
 
-  function handleMoveRightTask(){
-    alert("Moviendo la tarea a la izquierda");
+  const handleMoveRightTask = async () => {
+    if(classCode.value === '' || selectedColumn.value+1 <= 0){
+      return;
+    }
+    const columnIndex = selectedColumn.value+1;
+    const response = await moveRightColumn(classCode.value, columnIndex);
+    if(response){
+      //reload table
+      store.selectedTable = store.selectedTable;
+      await loadTableData(store.selectedTable);
+    }
   }
 
   //UPDATE NOTE
@@ -338,6 +356,9 @@
 
 <template>
   <div class="notebook-container">
+    <div v-if="showMessage" class="update-message">
+      ¡Nota actualizada!
+    </div>
     <div class="table-container">
       <h4 class="table-subtitle">Código de la clase: {{ classCode }}</h4>
       <table class="table table-dark table-striped">
@@ -397,9 +418,6 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div v-if="showMessage" class="update-message">
-    ¡Nota actualizada!
     </div>
     <!--Dynamic modal to add something name-->
     <Modal
@@ -481,6 +499,10 @@
   .column-menu li:hover {
     background: #007bff;
     color: white;
+  }
+
+  .update-message{
+    color: rgb(143, 14, 14);
   }
 
   /*Animation when apear menu*/

@@ -134,6 +134,50 @@ const updateNameTask = async (classCode, columnIndex, newTaskName) => {
   }
 };
 
+//move left column
+const moveLeftColumn = async (classCode, columnIndex) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.patch(`/moveTaskLeft?token=${authStore.token}&classCode=${classCode}&positionTaskColumn=${columnIndex}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error moviendo la columna: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al mover la columna: "+error.response.data.mensaje);
+  }
+};
+
+//move left column
+const moveRightColumn = async (classCode, columnIndex) => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try{
+    const response = await api.apiCells.patch(`/moveTaskRight?token=${authStore.token}&classCode=${classCode}&positionTaskColumn=${columnIndex}`,
+      { headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  }
+  catch(error){
+    console.error("Error moviendo la columna: ",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al mover la columna: "+error.response.data.mensaje);
+  }
+};
+
 export { 
     getCellsForTable,
     addTask,
@@ -141,4 +185,6 @@ export {
     deleteTask,
     deleteStudent,
     updateNameTask,
+    moveLeftColumn,
+    moveRightColumn,
  };
