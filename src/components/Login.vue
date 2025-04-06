@@ -51,7 +51,7 @@
     } 
     catch (error){
       const mensajeError = error.response.data?.mensaje || "Error desconocido";
-      alert("Se ha producido un error en la autenticación: "+ mensajeError);
+      alert("Se ha producido un error en la autenticación: "+ error.response.data.mensaje);
       console.error("Error en login:", error);
     } 
     finally{

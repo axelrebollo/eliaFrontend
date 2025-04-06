@@ -16,6 +16,7 @@ const getSubjects = async () => {
     return response.data.subjects;
   } catch (error) {
     console.error("Error obteniendo los años:", error.response?.data || error.message);
+    alert("Ha ocurrido un error al obtener las asignaturas: "+error.response.data.mensaje);
     return [];
   }
 };

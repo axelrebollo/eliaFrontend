@@ -79,7 +79,7 @@
         alert("Perfil actualizado con éxito");
       }
     } catch (error) {
-      alert("Hubo un error al actualizar el perfil: "+error.response.data.Error);
+      alert("Hubo un error al actualizar el perfil: "+error.response.data.mensaje);
       console.error("Error al actualizar el perfil:", error.response.data.Error);
     }
   };

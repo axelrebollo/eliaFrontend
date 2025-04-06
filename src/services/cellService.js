@@ -20,6 +20,7 @@ const getCellsForTable = async (nameSubject, nameYear, nameCourse, nameGroup, na
       "Error obteniendo las celdas de la tabla:",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al obtener las celdas de la tabla: "+error.response.data.mensaje);
     throw error;
   }
 };
@@ -87,6 +88,7 @@ const deleteTask = async (classCode, columnIndex) => {
     console.error("Error borrando la columna de la tarea: ",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al borrar la columna de la tarea: "+error.response.data.mensaje);
   }
 };
 

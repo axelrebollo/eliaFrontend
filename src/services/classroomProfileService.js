@@ -20,6 +20,7 @@ const getTableProfile = async () => {
       "Error en el registro:",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al obtener la tabla para el perfil del profesor: "+error.response.data.mensaje);
     throw error;
   }
 };
@@ -43,6 +44,7 @@ const enrollClassroom = async (classCode) => {
     return response.data;
   } catch (error) {
     console.error("Error en la inscripción del alumno en la clase:", error.response?.data || error.message);
+    alert("Ha ocurrido un error al insertar el alumno en la clase: "+error.response.data.mensaje);
     return null;
   }
 };

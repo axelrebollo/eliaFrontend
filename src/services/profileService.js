@@ -11,6 +11,7 @@ const getProfile = async () => {
       "Error en el registro:",
       error.response?.data || error.message
     );
+    alert("Ha ocurrido un error al obtener el perfil del usuario: "+error.response.data.mensaje);
     throw error;
   }
 };
@@ -31,6 +32,7 @@ const updateProfile = async (updatedData) => {
   } 
   catch (error) {
     console.error("Error al actualizar perfil:", error.response?.data || error.message);
+    alert("Ha ocurrido un error al actualizar el perfil del usuario: "+error.response.data.mensaje);
     throw error;
   }
 };

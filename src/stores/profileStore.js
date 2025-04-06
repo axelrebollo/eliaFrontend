@@ -34,6 +34,7 @@ export const useProfileStore = defineStore("profile", () => {
     } 
     catch (error) {
       console.error("Error al recuperar el perfil:", error.response?.data || error.message);
+      alert("Ha ocurrido un error al obtener el perfil: "+error.response.data.mensaje);
     }
   }
 
@@ -64,6 +65,7 @@ export const useProfileStore = defineStore("profile", () => {
     } 
     catch (error) {
       console.error("Error al actualizar el perfil:", error.response?.data || error.message);
+      alert("Ha ocurrido un error al actualizar el perfil: "+error.response.data.mensaje);
       return false;
     }
   }

@@ -23,6 +23,7 @@ export const useAuthStore = defineStore("auth", () => {
     } 
     catch(error){
       console.error("Error decodificando el token:", error);
+      alert("Ha ocurrido un error al decodificar el token de acceso: "+error.response.data.mensaje);
       logout();
     }
   }

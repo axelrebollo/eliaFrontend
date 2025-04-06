@@ -17,6 +17,7 @@ const getGroups = async (nameCourse, nameSubject, nameYear) => {
     }
     catch(error){
       console.error("Error obteniendo los grupos:", error.response?.data || error.message);
+      alert("Ha ocurrido un error al obtener los grupos: "+error.response.data.mensaje);
       return [];
     }
 };

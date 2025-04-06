@@ -17,6 +17,7 @@ const getTables = async (nameSubject, nameYear, nameCourse, nameGroup) => {
     }
     catch(error){
         console.error("Error obteniendo las páginas(tablas):", error.response?.data || error.message);
+        alert("Ha ocurrido un error al obtener las tablas: "+error.response.data.mensaje);
     return [];
     }
 };

@@ -17,6 +17,7 @@ const getCourses = async (nameYear) => {
     }
     catch(error){
         console.error("Error obteniendo los cursos:", error.response?.data || error.message);
+        alert("Ha ocurrido un error al obtener los cursos: "+error.response.data.mensaje);
     return [];
     }
 };
