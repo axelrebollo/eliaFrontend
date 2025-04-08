@@ -43,7 +43,7 @@
       router.push("login");
     } 
     catch(error){
-      alert("Se ha producido un error en el registro: "+error.response.data.Error);
+      alert("Se ha producido un error en el registro: "+error.response.data.mensaje);
     }
   };
 </script>
