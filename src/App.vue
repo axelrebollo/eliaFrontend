@@ -7,7 +7,14 @@
   <!--top menu-->
   <MainNavbar />
   <!--router general view-->
-  <RouterView />
+  <div class="app-background">
+    <RouterView />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .app-background {
+    background-color: rgb(122, 122, 122);
+    min-height: 100vh;
+  }
+</style>
