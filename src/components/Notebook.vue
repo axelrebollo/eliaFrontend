@@ -181,10 +181,29 @@
         submitHandler: (newTaskName) => handleUpdateNameTask(newTaskName, columnIndex)
       };
     } 
+    //create column average or aritmetic mean
+    else if (type === "averageTask") {
+      modalConfig.value = {
+        title: "Crear tarea con media aritmética",
+        placeholder: "Nombre de la nueva tarea",
+        buttonText: "Isertar Media",
+        extraFields: {
+          columnsToAverage: headers.value.map((header, idx) => ({
+              name: header,
+              selected: false,
+              index: idx
+            })
+          )
+        },
+        submitHandler: ({ newTaskName, selectedColumnIndexes }) => { 
+          handleAverageTask(newTaskName, selectedColumnIndexes);
+        }
+      };
+    }
     modalRef.value.openModal();
   };
 
-  //call to backend add task right to reference task
+  //add task right to reference task option
   const handleAddTask = async (nameNewTask, nameReferenceTask) => {
     if(nameNewTask === "" || classCode.value === "" ||
       store.selectedSubject === "" || store.selectedYear === "" || store.selectedCourse === "" ||
@@ -204,7 +223,7 @@
     }
   }
   
-  //call to backend update name task selected
+  //update name task selected option
   const handleUpdateNameTask = async (newTaskName, columnIndex) => {
     if(newTaskName === '' || columnIndex === null || columnIndex < 0){
       alert("Error seleccionando los datos");
@@ -219,6 +238,7 @@
     }
   }
 
+  //delete task option
   const handleDeleteTask = async () => {
     if(selectedColumn.value === null || classCode.value === ''){
       return;
@@ -238,6 +258,7 @@
     }
   }
 
+  //delete to classroom student option
   const handleDeleteStudent = async () => {
     if(selectedStudent.value === null || classCode.value === ''){
       return;
@@ -258,6 +279,7 @@
     }
   }
 
+  //move left task column option
   const handleMoveLeftTask = async () => {
     if(classCode.value === '' || selectedColumn.value+1 <= 0){
       return;
@@ -271,6 +293,7 @@
     }
   }
 
+  //move right task column option
   const handleMoveRightTask = async () => {
     if(classCode.value === '' || selectedColumn.value+1 <= 0){
       return;
@@ -284,7 +307,57 @@
     }
   }
 
+  //add arithmetic mean task column option
+  const handleAverageTask = async (newTaskName, selectedIndexes) => {
+    if (!newTaskName || selectedIndexes.length === 0 || classCode.value === "") {
+      alert("Debes introducir un nombre y seleccionar al menos una tarea.");
+      return;
+    }
+
+    //insert task right to reference
+    const referenceTaskName = headers.value[selectedColumn.value];  
+
+    //add task column
+    const addTaskResponse = await addTask(
+      classCode.value, 
+      newTaskName, 
+      referenceTaskName, 
+      store.selectedSubject, 
+      store.selectedYear, 
+      store.selectedCourse, 
+      store.selectedGroup,
+    );
+
+    if (!addTaskResponse) {
+      alert("Error al crear la tarea.");
+      return;
+    }
+
+    //load table to wait creation new column task
+    await loadTableData(store.selectedTable);
+
+    //Calc and update to all rows
+    for (const student of rawData.value) {
+      const notes = selectedIndexes.map(idx => parseFloat(student.notes[idx])).filter(n => !isNaN(n));
+
+      if (notes.length === 0) continue;
+
+      const average = (notes.reduce((a, b) => a + b, 0) / notes.length).toFixed(2);
+
+      await updateNote(
+        classCode.value,
+        student.name,
+        newTaskName,
+        average
+      );
+    }
+
+    //refresh table
+    await loadTableData(store.selectedTable);
+  }
+
   //UPDATE NOTE
+  
   const showMessage = ref(false);
   const originalNote = ref(""); //save initial note
 
@@ -326,9 +399,10 @@
         await loadTableData(store.selectedTable);
         showMessage.value = true;
         setTimeout(() => { 
-          showMessage.value = false; 
-        }, 
-        3000);
+            showMessage.value = false; 
+          }, 
+          3000
+        );
       }
     }
     catch(error){
@@ -380,6 +454,7 @@
                   :style="{ top: menuColumnY + 'px', left: menuColumnX + 'px' }">
                 <ul>
                   <li @click="openModal('addTask')"><i class="bi bi-plus"></i> Añadir tarea</li>
+                  <li @click="openModal('averageTask')"><i class="bi bi-calculator"></i> Añadir media aritmética</li>
                   <li @click="openModal('updateNameTask')"><i class="bi bi-pencil"></i> Cambiar nombre</li>
                   <li @click="handleMoveLeftTask"><i class="bi bi-arrow-left"></i> Mover izquierda</li>
                   <li @click="handleMoveRightTask"><i class="bi bi-arrow-right"></i> Mover derecha</li>
@@ -425,6 +500,7 @@
       :title="modalConfig.title"
       :placeholder="modalConfig.placeholder"
       :buttonText="modalConfig.buttonText"
+      :extraFields="modalConfig.extraFields"
       @submit="modalConfig.submitHandler"
       @close="() => {}"
     />

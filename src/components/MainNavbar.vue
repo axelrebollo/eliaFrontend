@@ -27,6 +27,7 @@
   const isProfileStudentPage = computed(() => router.currentRoute.value.path === "/profile/profileStudent");
   const isProfileTeacherPage = computed(() => router.currentRoute.value.path === "/profile/profileTeacher");
   const isNotebookPage = computed(() => router.currentRoute.value.path === "/notebook");
+  const isClassroomPage = computed(() => router.currentRoute.value.path === "/classroomView");
 
   const goToProfile = () => {
     if(authStore.userRole === "TEACHER"){
@@ -40,6 +41,10 @@
   const goToNotebook = () => {
     router.push("/notebook");
   };
+
+  const goToClassroom = () => {
+    router.push("/classroomView");
+  }
 
   const logout = () => {
     authStore.logout();
@@ -67,6 +72,12 @@
       <li v-if="isAutenticated && userRole === 'TEACHER' && !isNotebookPage">
         <button type="button" class="btn btn-outline-custom" @click="goToNotebook">
           <a>Libro de notas</a>
+        </button>
+      </li>
+      <!--classroomView-->
+      <li v-if="isAutenticated && userRole === 'STUDENT' && !isClassroomPage">
+        <button type="button" class="btn btn-outline-custom" @click="goToClassroom">
+          <a>Notas</a>
         </button>
       </li>
     </ul>

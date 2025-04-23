@@ -1,54 +1,78 @@
 <script setup>
-    import { ref } from "vue";
+  import { ref } from "vue";
 
-    const props = defineProps({
+  const props = defineProps({
     //text 
     title: {
-        type: String, 
-        default: '',
+      type: String, 
+      default: '',
     },
     //input
     placeholder: {
-        type: String, 
-        default: '',
+      type: String, 
+      default: '',
     },
     //text button
     buttonText: {
-        type: String, 
-        default: 'Aceptar',
-    }
-    });
+      type: String, 
+      default: 'Aceptar',
+    },
+    //columns from table
+    extraFields: {
+      type: Object,
+      default: () => ({})
+    },
+  });
 
-    const emit = defineEmits(["close", "submit"]);
-    const inputValue = ref("");
-    const isVisible = ref(false);
+  const emit = defineEmits(["close", "submit"]);
+  const inputValue = ref("");
+  const isVisible = ref(false);
+  const selectedOptions = ref([]);
 
-    //open modal
-    const openModal = () => {
-      isVisible.value = true;
-    };
+  //open modal
+  const openModal = () => {
+    isVisible.value = true;
+  };
 
-    //close modal
-    const closeModal = () => {
-      isVisible.value = false;
-      inputValue.value = "";
-      emit("close");
-    };
+  //close modal
+  const closeModal = () => {
+    isVisible.value = false;
+    inputValue.value = "";
+    selectedOptions.value = [];
+    emit("close");
+  };
 
-    //set name
-    const submit = () => {
-    if (inputValue.value.trim() !== "") {
-        emit("submit", inputValue.value);
-        closeModal();
-    } else {
+  //set name o average task
+  const submit = () => {
+    const isAverageTask = props.extraFields && props.extraFields.columnsToAverage;
+
+    if (isAverageTask) {
+      if (inputValue.value.trim() === "") {
         alert(`Por favor, ingresa ${props.placeholder.toLowerCase()}.`);
+        return;
+      }
+      const selectedIndexes = selectedOptions.value;
+      if (selectedIndexes.length === 0) {
+        alert("Por favor, selecciona al menos una columna.");
+        return;
+      }
+      emit("submit", { newTaskName: inputValue.value, selectedColumnIndexes: selectedIndexes});
+      closeModal();
+    } 
+    else {
+      if (inputValue.value.trim() === "") {
+        alert(`Por favor, ingresa ${props.placeholder.toLowerCase()}.`);
+        return;
+      }
+      emit("submit", inputValue.value);
+      closeModal();
     }
-    };
+  };
 
-    defineExpose({
+  defineExpose({
     openModal,
-    closeModal
-    });
+    closeModal,
+  });
 </script>
 
 <template>
@@ -57,7 +81,13 @@
       <!--text dynamic-->
       <h3>{{ title }}</h3>
       <!--input dynamic-->
-      <input v-model="inputValue" type="text" :placeholder="placeholder" />
+      <input v-model="inputValue" type="text" :placeholder="placeholder"/>
+      <!--columns checkbox to mean arithmetic-->
+      <div v-if="extraFields && extraFields.columnsToAverage">
+        <label v-for="(column, index) in extraFields.columnsToAverage" :key="index">
+          <input type="checkbox" :value="column.index" v-model="selectedOptions" />{{ column.name }}
+        </label>
+      </div>
       <div class="modal-buttons">
         <!--button add name dynamic-->
         <button @click="submit">{{ buttonText }}</button>

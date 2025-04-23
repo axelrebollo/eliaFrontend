@@ -1,6 +1,4 @@
 <script setup>
-  import MainNavBarNotebook from "@/components/MainNavBarNotebook.vue";
-  import Notebook from "@/components/Notebook.vue";
   import { onMounted, ref, watch } from "vue";
   import { useProfileStore } from "@/stores/profileStore";
 
@@ -23,15 +21,10 @@
 </script>
 
 <template>
-  <div>
-    <!--dynamic load for name and surnames about user-->
-    <h2>Libro de notas</h2>
-    <h3>{{ name }} {{ surname1 }} {{ surname2}}</h3>
-    <div class="containerNotebook">
-      <MainNavBarNotebook/>
-      <Notebook/>
+    <div>
+        <h2>Notas del alumno/a : {{ name }} {{ surname1 }} {{ surname2}}</h2>
+        <h3>Tabla dinámica que muestre las notas de las clases del estudiante</h3>
     </div>
-  </div>
 </template>
 
 <style scoped>
@@ -47,19 +40,5 @@
     text-align: center;
     color: white;
     padding-top: 50px;
-  }
-
-  h3{
-    text-align: center;
-    color: white;
-    padding-top: 0px;
-    margin-bottom: 50px;
-  }
-
-  .containerNotebook {
-    display: flex;
-    flex-direction: row;
-    gap: 150px;
-    margin-left: 50px;
   }
 </style>
