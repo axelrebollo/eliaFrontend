@@ -18,19 +18,22 @@
   const modalConfig = ref({});
   
   //is executed always that exist some change in selectedTable
-  watch(() => store.selectedTable, (newSelectionTable) => {
-    if(!newSelectionTable){
+  watch(
+    [() => store.selectedTable, () => store.selectedGroup],
+  ([newSelectionTable, newGroup]) => {
       //if table not selected, clean table in view
+      if (!newSelectionTable) {
       headers.value = [];
       rawData.value = [];
       classCode.value = "";
       return;
     }
     //load classCode
-    loadClassCode(newSelectionTable);
+    loadClassCode(newSelectionTable, newGroup);
     //load table
     loadTableData(newSelectionTable);
-  });
+    }
+  );
 
   //save the table status if change component 
   onMounted(() => {
@@ -43,15 +46,16 @@
     }
   });
 
-  async function loadClassCode(newSelectionTable) {
+  async function loadClassCode(newSelectionTable, selectedGroup) {
     //get table classroom
     try{
       const response = await getTableProfile();
       clases.value = response.rows.map(row => ({
         codigo: row.classCode,
         pagina: row.nameTable,
+        grupo: row.nameGroup,
       }));
-      const filteredData = clases.value.filter(clase => clase.pagina === newSelectionTable);
+      const filteredData = clases.value.filter(clase => clase.pagina === newSelectionTable && clase.grupo === selectedGroup);
       classCode.value = filteredData[0].codigo;
       store.setClassCode(classCode.value);
     }
