@@ -49,7 +49,32 @@ const enrollClassroom = async (classCode) => {
   }
 };
 
+//Get table for teacher profile
+const getNotesForStudent = async () => {
+  const authStore = useAuthStore();
+  if (!authStore.token) {
+    console.error("No hay token disponible.");
+    return [];
+  }
+
+  try {
+    const response = await api.apiClassroomProfile.get(`/getNotesForStudent?token=${authStore.token}`,{
+      headers: {Authorization: `Bearer ${authStore.token}`},
+    });
+    return response.data;
+  } 
+  catch (error) {
+    console.error(
+      "Error en el registro:",
+      error.response?.data || error.message
+    );
+    alert("Ha ocurrido un error al obtener la tabla para mostrar las notas del estudiante: "+error.response.data.mensaje);
+    throw error;
+  }
+};
+
 export { 
   getTableProfile,
   enrollClassroom,
+  getNotesForStudent,
  };
