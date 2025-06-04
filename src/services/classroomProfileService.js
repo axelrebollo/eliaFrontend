@@ -49,7 +49,7 @@ const enrollClassroom = async (classCode) => {
   }
 };
 
-//Get table for teacher profile
+//Get table for student profile
 const getNotesForStudent = async () => {
   const authStore = useAuthStore();
   if (!authStore.token) {
